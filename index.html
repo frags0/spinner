@@ -653,9 +653,9 @@
     }
 
     function snapPhoto() {
-      // Photo not needed — just close camera and mark task done
+      var taskNum = activeTaskNum; // save before closeCamera clears it
       closeCamera();
-      if (activeTaskNum !== null) markTaskDone(activeTaskNum);
+      if (taskNum !== null) markTaskDone(taskNum);
     }
 
     function closeCamera() {
