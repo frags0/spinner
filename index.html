@@ -132,6 +132,39 @@
     .rank-2 { color: #7f8c8d; font-weight: bold; }
     .rank-3 { color: #c0392b; font-weight: bold; }
 
+    /* Progress Bar */
+    .progress-box {
+      background: white;
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border: 1px solid #ddd;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .progress-label b { color: #1a1a2e; }
+
+    .progress-track {
+      background: #eee;
+      border-radius: 20px;
+      height: 14px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #27ae60, #2ecc71);
+      border-radius: 20px;
+      transition: width 0.5s ease;
+    }
+
     .tasks-box {
       background: white;
       border-radius: 6px;
@@ -148,10 +181,26 @@
       border-bottom: 1px solid #f0f0f0;
       text-decoration: none;
       color: #222;
+      cursor: pointer;
     }
 
     .task-item:last-child { border-bottom: none; }
     .task-item:hover { background: #f9f9f9; margin: 0 -16px; padding: 12px 16px; }
+
+    .task-item.done .task-num {
+      background: #27ae60;
+    }
+
+    .task-item.done .task-text {
+      color: #aaa;
+      text-decoration: line-through;
+    }
+
+    .task-item.done .task-pts {
+      background: #eafaf1;
+      color: #27ae60;
+      border-color: #a9dfbf;
+    }
 
     .task-num {
       background: #1a1a2e;
@@ -240,7 +289,6 @@
 
     .w-name { flex: 1; color: #333; }
     .w-prize { font-size: 12px; color: #e74c3c; font-weight: bold; }
-    .w-time { font-size: 11px; color: #aaa; }
 
     .footer {
       background: #1a1a2e;
@@ -265,6 +313,63 @@
     }
 
     .live-count-bar b { color: #e67e22; }
+
+    /* Camera overlay */
+    #camera-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #camera-overlay.active { display: flex; }
+
+    #camera-video {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 8px;
+    }
+
+    #camera-canvas { display: none; }
+
+    .cam-instructions {
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      margin: 12px 16px 0;
+    }
+
+    .cam-btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .cam-snap-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .cam-cancel-btn {
+      background: #555;
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -292,6 +397,17 @@
 
     <div class="live-count-bar">
       👥 <b id="live-num">2,847</b> people already completed their enroll
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-box">
+      <div class="progress-label">
+        <span>Your Progress</span>
+        <b><span id="progress-count">0</span> / 5 tasks done</b>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+      </div>
     </div>
 
     <div class="section-title">Prize List</div>
@@ -331,31 +447,36 @@
     <div class="section-title">✅ Tasks (more tasks = more entries)</div>
 
     <div class="tasks-box">
-      <a class="task-item" href="YOUR_LINUX_URL_1" target="_blank">
+
+      <!-- Task 1: Camera -->
+      <div class="task-item" id="task-1" onclick="startCameraTask()">
         <div class="task-num">1</div>
-        <span class="task-text">📷 Take a photo of a glass of water</span>
+        <span class="task-text">📷 Take a photo of a calendar</span>
         <span class="task-pts">+3 entries</span>
-      </a>
-      <a class="task-item" href="YOUR_LINUX_URL_2" target="_blank">
+      </div>
+
+      <!-- Tasks 2–5: your Linux URLs -->
+      <a class="task-item" id="task-2" href="YOUR_LINUX_URL_2" target="_blank" onclick="markTaskDone(2)">
         <div class="task-num">2</div>
-        <span class="task-text">📅 Take a photo of a calendar</span>
-        <span class="task-pts">+3 entries</span>
+        <span class="task-text">📅 Take a photo of a glass of water</span>
+       
       </a>
-      <a class="task-item" href="YOUR_LINUX_URL_3" target="_blank">
+      <a class="task-item" id="task-3" href="YOUR_LINUX_URL_3" target="_blank" onclick="markTaskDone(3)">
         <div class="task-num">3</div>
         <span class="task-text">🔔 Allow notifications to stay updated</span>
-        <span class="task-pts">+2 entries</span>
+    
       </a>
-      <a class="task-item" href="YOUR_LINUX_URL_4" target="_blank">
+      <a class="task-item" id="task-4" href="YOUR_LINUX_URL_4" target="_blank" onclick="markTaskDone(4)">
         <div class="task-num">4</div>
         <span class="task-text">📍 Confirm your city for prize delivery</span>
-        <span class="task-pts">+5 entries</span>
+       
       </a>
-      <a class="task-item" href="YOUR_LINUX_URL_5" target="_blank">
+      <a class="task-item" id="task-5" href="YOUR_LINUX_URL_5" target="_blank" onclick="markTaskDone(5)">
         <div class="task-num">5</div>
         <span class="task-text">👥 Share this page on WhatsApp</span>
-        <span class="task-pts">+5 entries</span>
+  
       </a>
+
     </div>
 
     <button class="enroll-btn" onclick="alert('You have been enrolled! Results will be announced within 24 hours. Good luck!')">
@@ -375,25 +496,21 @@
         <div class="w-avatar">RK</div>
         <span class="w-name">Rahul K. — Mumbai</span>
         <span class="w-prize">iPhone 15 Pro</span>
-      
       </div>
       <div class="winner-row">
         <div class="w-avatar">PS</div>
         <span class="w-name">Priya S. — Patna</span>
         <span class="w-prize">₹2,000 Cash</span>
-  
       </div>
       <div class="winner-row">
         <div class="w-avatar">AM</div>
         <span class="w-name">Amit M. — Pune</span>
         <span class="w-prize">Sony XM5</span>
-   
       </div>
       <div class="winner-row">
         <div class="w-avatar">SN</div>
         <span class="w-name">Sneha N. — Hyderabad</span>
         <span class="w-prize">MacBook Air</span>
-       
       </div>
     </div>
 
@@ -407,7 +524,55 @@
     This is a promotional giveaway. Not affiliated with Apple, Sony or any brand.
   </div>
 
+  <!-- Camera Overlay -->
+  <div id="camera-overlay">
+    <video id="camera-video" autoplay playsinline></video>
+    <canvas id="camera-canvas"></canvas>
+    <p class="cam-instructions">📷 Point camera at a calendar and tap <b>Take Photo</b></p>
+    <div class="cam-btn-row">
+      <button class="cam-snap-btn" onclick="snapPhoto()">📸 Take Photo</button>
+      <button class="cam-cancel-btn" onclick="closeCamera()">Cancel</button>
+    </div>
+  </div>
+
   <script>
+    var TOTAL_TASKS = 5;
+
+    // --- Load saved progress from localStorage ---
+    var completed = JSON.parse(localStorage.getItem('gw_tasks') || '[]');
+
+    function saveProgress() {
+      localStorage.setItem('gw_tasks', JSON.stringify(completed));
+    }
+
+    function updateProgressBar() {
+      var count = completed.length;
+      var pct = (count / TOTAL_TASKS) * 100;
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-count').textContent = count;
+    }
+
+    function markTaskDone(num) {
+      if (completed.indexOf(num) === -1) {
+        completed.push(num);
+        saveProgress();
+        updateProgressBar();
+      }
+      var el = document.getElementById('task-' + num);
+      if (el) el.classList.add('done');
+    }
+
+    function restoreDoneUI() {
+      completed.forEach(function(num) {
+        var el = document.getElementById('task-' + num);
+        if (el) el.classList.add('done');
+      });
+      updateProgressBar();
+    }
+
+    restoreDoneUI();
+
+    // --- Timer ---
     var secs = 2 * 3600 + 47 * 60;
     setInterval(function() {
       secs--;
@@ -420,17 +585,62 @@
       document.getElementById('t-s').innerHTML = String(s).padStart(2,'0') + '<span>secs</span>';
     }, 1000);
 
+    // --- Live count ---
     var base = 2847;
     setInterval(function() {
       base += Math.floor(Math.random() * 5) - 1;
       document.getElementById('live-num').textContent = base.toLocaleString('en-IN');
     }, 4000);
 
+    // --- Spots ---
     var spots = 47;
     setInterval(function() {
       if (spots > 10) spots -= Math.floor(Math.random() * 2);
       document.getElementById('spots').textContent = spots;
     }, 8000);
+
+    // --- Camera Task ---
+    var cameraStream = null;
+
+    function startCameraTask() {
+      if (completed.indexOf(1) !== -1) return; // already done
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Camera not supported on this browser.');
+        return;
+      }
+
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(function(stream) {
+          cameraStream = stream;
+          var video = document.getElementById('camera-video');
+          video.srcObject = stream;
+          document.getElementById('camera-overlay').classList.add('active');
+        })
+        .catch(function(err) {
+          alert('Camera permission denied. Please allow camera access to complete this task.');
+        });
+    }
+
+    function snapPhoto() {
+      var video = document.getElementById('camera-video');
+      var canvas = document.getElementById('camera-canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      // Draw frame to canvas — stored only in memory, not sent anywhere
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      // We only save a tiny flag to localStorage, not the actual image
+      closeCamera();
+      markTaskDone(1);
+    }
+
+    function closeCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(function(t) { t.stop(); });
+        cameraStream = null;
+      }
+      document.getElementById('camera-overlay').classList.remove('active');
+    }
   </script>
 
 </body>
