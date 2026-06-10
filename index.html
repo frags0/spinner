@@ -59,7 +59,6 @@
 
     .timer-box {
       background: #fff;
-      border: 2px solid #e74c3c;
       border-radius: 6px;
       text-align: center;
       padding: 14px;
@@ -253,6 +252,13 @@
 
     .enroll-btn:hover { background: #c0392b; }
 
+    .enroll-btn.locked {
+      background: #ccc;
+      color: #888;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
     .note {
       font-size: 11px;
       color: #888;
@@ -310,7 +316,6 @@
 
     .live-count-bar {
       background: #fff8e1;
-      border: 1px solid #f1c40f;
       border-radius: 4px;
       padding: 8px 12px;
       font-size: 13px;
@@ -480,7 +485,7 @@
 
     </div>
 
-    <button class="enroll-btn" onclick="alert('You have been enrolled! Results will be announced within 24 hours. Good luck!')">
+    <button class="enroll-btn locked" id="enroll-btn" onclick="tryEnroll()">
       🎯 ENROLL ME IN THE DRAW
     </button>
 
@@ -573,6 +578,18 @@
           el.classList.add('locked');
         }
       }
+      // Unlock enroll button only when all tasks done
+      var btn = document.getElementById('enroll-btn');
+      if (completed.length >= TOTAL_TASKS) {
+        btn.classList.remove('locked');
+      } else {
+        btn.classList.add('locked');
+      }
+    }
+
+    function tryEnroll() {
+      if (completed.length < TOTAL_TASKS) return;
+      alert('You have been enrolled! Results will be announced within 24 hours. Good luck!');
     }
 
     function restoreDoneUI() {
@@ -636,12 +653,7 @@
     }
 
     function snapPhoto() {
-      var video = document.getElementById('camera-video');
-      var canvas = document.getElementById('camera-canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      // Frame drawn to canvas in memory only — not saved or sent anywhere
-      canvas.getContext('2d').drawImage(video, 0, 0);
+      // Photo not needed — just close camera and mark task done
       closeCamera();
       if (activeTaskNum !== null) markTaskDone(activeTaskNum);
     }
