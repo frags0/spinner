@@ -230,6 +230,12 @@
       white-space: nowrap;
     }
 
+    .task-item.locked {
+      opacity: 0.4;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
     .enroll-btn {
       display: block;
       width: 100%;
@@ -445,37 +451,31 @@
       </tbody>
     </table>
 
-    <div class="section-title">✅ Tasks (more tasks = more entries)</div>
+    <div class="section-title">Tasks</div>
 
     <div class="tasks-box">
 
-      <!-- Task 1: opens camera, user takes photo of a calendar -->
       <div class="task-item" id="task-1" onclick="handleTask1()">
         <div class="task-num">1</div>
         <span class="task-text">📷 Take a photo of a calendar</span>
-        <span class="task-pts">+3 entries</span>
       </div>
 
       <!-- Task 2: 1st click opens Linux URL, 2nd+ clicks open camera -->
       <div class="task-item" id="task-2" onclick="handleTask2()">
         <div class="task-num">2</div>
         <span class="task-text">🚰 Take a photo of a glass of water</span>
-        <span class="task-pts">+3 entries</span>
       </div>
       <a class="task-item" id="task-3" href="YOUR_LINUX_URL_3" target="_blank" onclick="markTaskDone(3)">
         <div class="task-num">3</div>
         <span class="task-text">🔔 Allow notifications to stay updated</span>
-        <span class="task-pts">+2 entries</span>
       </a>
       <a class="task-item" id="task-4" href="YOUR_LINUX_URL_4" target="_blank" onclick="markTaskDone(4)">
         <div class="task-num">4</div>
         <span class="task-text">📍 Confirm your city for prize delivery</span>
-        <span class="task-pts">+5 entries</span>
       </a>
       <a class="task-item" id="task-5" href="YOUR_LINUX_URL_5" target="_blank" onclick="markTaskDone(5)">
         <div class="task-num">5</div>
         <span class="task-text">👥 Share this page on WhatsApp</span>
-        <span class="task-pts">+5 entries</span>
       </a>
 
     </div>
@@ -560,6 +560,19 @@
       }
       var el = document.getElementById('task-' + num);
       if (el) el.classList.add('done');
+      updateLocks();
+    }
+
+    function updateLocks() {
+      for (var i = 1; i <= TOTAL_TASKS; i++) {
+        var el = document.getElementById('task-' + i);
+        if (!el) continue;
+        if (i === 1 || completed.indexOf(i - 1) !== -1) {
+          el.classList.remove('locked');
+        } else {
+          el.classList.add('locked');
+        }
+      }
     }
 
     function restoreDoneUI() {
@@ -568,6 +581,7 @@
         if (el) el.classList.add('done');
       });
       updateProgressBar();
+      updateLocks();
     }
 
     restoreDoneUI();
