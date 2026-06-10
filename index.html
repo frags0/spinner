@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giveaway — Win a MacBook Air M3</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f3;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1.25rem;
+    }
+
+    .page {
+      max-width: 540px;
+      width: 100%;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #ebebeb;
+      color: #666;
+      border: 1px solid #ddd;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 {
+      font-size: 30px;
+      font-weight: 600;
+      color: #111;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .sub {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .prize-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .prize-icon { font-size: 30px; flex-shrink: 0; }
+
+    .prize-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #999;
+      margin-bottom: 3px;
+    }
+
+    .prize-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 2px;
+    }
+
+    .prize-val { font-size: 13px; color: #888; }
+
+    .section-label {
+      font-size: 11px;
+      color: #999;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+
+    .task:hover { border-color: #bbb; }
+
+    .task.done {
+      border-color: #b7ddb7;
+      background: #f4fbf4;
+    }
+
+    .task-icon {
+      font-size: 18px;
+      color: #aaa;
+      flex-shrink: 0;
+    }
+
+    .task.done .task-icon { color: #3a9e3a; }
+
+    .task-text {
+      flex: 1;
+      font-size: 14px;
+      color: #222;
+    }
+
+    .task-pts {
+      font-size: 12px;
+      color: #aaa;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .task.done .task-pts { color: #3a9e3a; }
+
+    .check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid #ccc;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .task.done .check {
+      background: #3a9e3a;
+      border-color: #3a9e3a;
+    }
+
+    .check i { font-size: 12px; color: #fff; display: none; }
+
+    .task.done .check i { display: block; }
+
+    .progress-wrap { margin-bottom: 1.75rem; }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .progress-count { font-size: 13px; color: #888; }
+
+    .progress-bar {
+      height: 4px;
+      background: #e8e8e8;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #111;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .enroll-btn {
+      width: 100%;
+      padding: 14px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .enroll-btn:hover:not(:disabled) { opacity: 0.82; }
+
+    .enroll-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .enrolled-msg {
+      text-align: center;
+      padding: 1rem;
+      font-size: 14px;
+      color: #3a9e3a;
+      display: none;
+    }
+
+    .deadline {
+      text-align: center;
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 1rem;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #141414; color: #e8e8e8; }
+      .badge { background: #222; color: #aaa; border-color: #333; }
+      h1 { color: #f0f0f0; }
+      .sub { color: #888; }
+      .prize-card { background: #1e1e1e; border-color: #2e2e2e; }
+      .prize-name { color: #f0f0f0; }
+      .task { background: #1e1e1e; border-color: #2e2e2e; }
+      .task:hover { border-color: #444; }
+      .task.done { background: #162016; border-color: #2a4a2a; }
+      .task-text { color: #ddd; }
+      .check { border-color: #444; }
+      .progress-bar { background: #2a2a2a; }
+      .progress-fill { background: #e8e8e8; }
+      .enroll-btn { background: #e8e8e8; color: #111; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="badge">Giveaway · Open now</div>
+    <h1>Win a MacBook Air M3</h1>
+    <p class="sub">Complete the tasks below to earn entries. More entries = higher chance of winning.</p>
+
+    <div class="prize-card">
+      <div class="prize-icon">🎁</div>
+      <div>
+        <div class="prize-label">Grand prize</div>
+        <div class="prize-name">MacBook Air M3 13"</div>
+        <div class="prize-val">Worth ₹1,14,900 — 1 winner picked randomly</div>
+      </div>
+    </div>
+
+    <div class="section-label">Tasks</div>
+    <div class="task-list">
+      <div class="task" onclick="toggle(this)">
+        <i class="ti ti-brand-instagram task-icon" aria-hidden="true"></i>
+        <span class="task-text">Follow us on Instagram</span>
+        <span class="task-pts">+1 entry</span>
+        <div class="check"><i class="ti ti-check"></i></div>
+      </div>
+      <div class="task" onclick="toggle(this)">
+        <i class="ti ti-share task-icon" aria-hidden="true"></i>
+        <span class="task-text">Share this page with a friend</span>
+        <span class="task-pts">+2 entries</span>
+        <div class="check"><i class="ti ti-check"></i></div>
+      </div>
+      <div class="task" onclick="toggle(this)">
+        <i class="ti ti-user-plus task-icon" aria-hidden="true"></i>
+        <span class="task-text">Refer a friend who signs up</span>
+        <span class="task-pts">+3 entries</span>
+        <div class="check"><i class="ti ti-check"></i></div>
+      </div>
+      <div class="task" onclick="toggle(this)">
+        <i class="ti ti-brand-youtube task-icon" aria-hidden="true"></i>
+        <span class="task-text">Subscribe to our YouTube channel</span>
+        <span class="task-pts">+1 entry</span>
+        <div class="check"><i class="ti ti-check"></i></div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span class="section-label" style="margin:0;">Your progress</span>
+        <span class="progress-count" id="prog-text">0 of 4 tasks done</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <button class="enroll-btn" id="enroll-btn" disabled onclick="enroll()">
+      Complete at least 1 task to enroll
+    </button>
+    <div class="enrolled-msg" id="enrolled-msg">
+      <i class="ti ti-circle-check" style="font-size:20px; vertical-align:-4px; margin-right:6px;"></i>
+      You're enrolled! Good luck. 🎉
+    </div>
+    <p class="deadline">Draw closes July 31, 2026 · Winners notified by email</p>
+  </div>
+
+  <script>
+    function toggle(el) {
+      el.classList.toggle('done');
+      update();
+    }
+
+    function update() {
+      const total = document.querySelectorAll('.task').length;
+      const done = document.querySelectorAll('.task.done').length;
+      document.getElementById('prog-text').textContent = done + ' of ' + total + ' tasks done';
+      document.getElementById('prog-fill').style.width = Math.round((done / total) * 100) + '%';
+      const btn = document.getElementById('enroll-btn');
+      btn.disabled = done === 0;
+      btn.textContent = done > 0 ? 'Enroll me in the draw' : 'Complete at least 1 task to enroll';
+    }
+
+    function enroll() {
+      document.getElementById('enroll-btn').style.display = 'none';
+      document.getElementById('enrolled-msg').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
