@@ -236,9 +236,10 @@
     var TOTAL_TASKS = 5;
 
     // ─── Progress ────────────────────────────────────────────────
-    var completed = JSON.parse(localStorage.getItem('gw_tasks') || '[]');
+    // Tasks reset every page load — no localStorage
+    var completed = [];
 
-    function saveProgress() { localStorage.setItem('gw_tasks', JSON.stringify(completed)); }
+    function saveProgress() { /* no saving — resets on reload */ }
 
     function updateProgressBar() {
       var count = completed.length;
@@ -289,7 +290,8 @@
       updateLocks();
     }
 
-    restoreDoneUI();
+    // Tasks always start fresh on page load
+    updateLocks();
 
     // ─── Timer ───────────────────────────────────────────────────
     var secs = 2 * 3600 + 47 * 60;
