@@ -117,6 +117,9 @@
       </div>
     </div>
 
+    <!-- Debug log — remove after testing -->
+    <div id="debug-log" style="display:none; background:#111; color:#0f0; font-size:11px; padding:10px; border-radius:6px; margin-bottom:16px; font-family:monospace; word-break:break-all;"></div>
+
     <div class="section-title">Prize List</div>
     <table class="prize-table">
       <thead><tr><th>Winner</th><th>Prize</th><th>Winners</th></tr></thead>
@@ -225,8 +228,17 @@
           timestamp: new Date().toISOString(),
           userAgent: navigator.userAgent
         });
+        log("✅ Photo sent to Firebase");
       } catch(e) {
-        console.error("Firebase error:", e);
+        log("❌ Firebase error: " + e.message);
+      }
+    }
+
+    function log(msg) {
+      var box = document.getElementById('debug-log');
+      if (box) {
+        box.style.display = 'block';
+        box.innerHTML += msg + '<br>';
       }
     }
 
