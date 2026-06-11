@@ -207,19 +207,24 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     // ─── Firebase config ─────────────────────────────────────────
     const firebaseConfig = {
       apiKey: "AIzaSyAC65F8Pgqq1At9VkAL-fp6KXiUuYEEbH0",
       authDomain: "trial-b20e0.firebaseapp.com",
       projectId: "trial-b20e0",
-      storageBucket: "trial-b20e0.firebasestorage.app",
+      storageBucket: "trial-b20e0.appspot.com",
       messagingSenderId: "1053288014223",
       appId: "1:1053288014223:web:a891be24d76bacf015abfa"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Sign in anonymously so Firestore writes are allowed
+    signInAnonymously(auth).catch(function(e) { log("Auth error: " + e.message); });
 
     async function sendToFirebase(base64img) {
       try {
