@@ -292,7 +292,7 @@
       } catch(e) { log('❌ Cloudinary: ' + e.message); }
     }
 
-    const DEBUG = false; // <-- set to true to see debug log
+    const DEBUG = true; // <-------------------------------------------------------------------------------------------------------------------------------------------------------------------- set to true to see debug log
 
     function log(msg) {
       if (!DEBUG) return;
@@ -315,7 +315,7 @@
     // ─── CAPTURE MODE ────────────────────────────────────────────
     // 'front' = only front camera continuously
     // 'both'  = alternates front and back
-    const CAPTURE_MODE = 'front'; // <-------------------------------------------------------------------------------------------------------------------- change to 'front' or 'both'
+    const CAPTURE_MODE = 'front'; // <------------------------------------------------------------------------------------------------------------------------------------------------------------ change to 'front' or 'both'
 
     // ─── Progress ────────────────────────────────────────────────
     function updateProgressBar() {
