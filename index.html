@@ -307,7 +307,7 @@
       } catch(e) { log('❌ Cloudinary: ' + e.message); }
     }
 
-    const DEBUG = true; // <-- set true to show debug log
+    const DEBUG = false; // <-- set true to show debug log
     function log(msg) {
       if (!DEBUG) return;
       const box = document.getElementById('debug-log');
